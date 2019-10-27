@@ -1,1 +1,19 @@
-G2 eSports | SKT T1 Telecom | Invictus Gaming | Fnatic
+CREATE TABLE campeonatos(
+    cod_campeonato serial PRIMARY KEY,
+    nome varchar(150) not null,
+    data_inicio date not null,
+    data_fim date not null,
+    categoria varchar(50)
+)
+
+CREATE TABLE Jogos(
+    cod_jogos serial primary key,
+    cod_campeonato int not null,
+    data_jogo date not null,
+    hora_jogo time not null,
+    times varchar(50) not null,
+    vencedor varchar(50) not null,
+    local_jogo varchar(60) not null,
+    FOREIGN KEY (cod_Campeonato)
+    REFERENCES campeonatos (cod_Campeonato)
+)

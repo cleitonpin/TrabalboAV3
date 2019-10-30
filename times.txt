@@ -17,3 +17,32 @@ CREATE TABLE Jogos(
     FOREIGN KEY (cod_Campeonato)
     REFERENCES campeonatos (cod_Campeonato)
 )
+
+create table equipes(
+	nomeEquipe varchar(100) not null,
+	cod_equipe SERIAL PRIMARY KEY,
+	toplaner varchar (100) not null,
+	midlaner varchar (100) not null,
+	jungler varchar (100) not null,
+	atirador varchar (100) not null,
+	suport varchar (100) not null,
+	reservas varchar (100),
+	treinador varchar (100) not null
+);
+	
+create table OrganizadorPessoa(
+	id_pessoa SERIAL PRIMARY KEY,
+	nome varchar(100) not null,
+	contato varchar (100) not null,
+	endereço varchar (100) not null
+);
+		
+create table PessoaJuridica(
+	id_pessoa int references OrganizadorPessoa(id_pessoa),
+	cnpj varchar(100) not null
+);
+	
+create table PessoaFisica(
+	id_pessoa int references OrganizadorPessoa(id_pessoa),
+	cpf varchar(100) not null
+);

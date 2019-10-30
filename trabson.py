@@ -2,6 +2,7 @@ import bd1
 import random
 
 def criarconta():
+
     cont = 0 
     while cont == 0:
         telefone = 0
@@ -41,7 +42,97 @@ def criarconta():
             bd1.connection.commit()
             print('Úsuario cadastrado com sucesso')
             cont = 1 
-    
+def registrarEquipes():
+
+    nomeORGANIZADOR = input('Insira seu nome pessoal -> ')
+    Endereço = input('Insira seu endereço -> ')
+    contato = input('Insira meio de contato [email, telefone, etc]->')
+    pessoa = int(input('Cadastrar a equipe como: Pessoa Física [1] ou Juridíca [2] -> '))
+    a = 0 
+
+    while a == 0:
+
+        if pessoa == 1:
+            nomeEquipe = input('Insira o nome da equipe que deseja inscrever no campeonato -> ')
+            nomeTreinador = input('Insira o nome do treinador -> ')
+            topLaner = input('Exemplo nome -> Flavio "Jukes" Fernandes\nNome do top laner [Nome "Nick" Sobrenome] -> ')
+            jungle = input('Nome do jungle [Nome "Nick" Sobrenome] -> ')
+            midLaner = input('Nome do mid laner [Nome "Nick" Sobrenome] -> ')
+            atirador = input('Nome do atirador [Nome "Nick" Sobrenome] -> ')
+            suporte = input('Nome do suporte [Nome "Nick" Sobrenome] -> ')
+            reserva = input('Há reservas s/n? ')
+
+            if reserva == 's':
+                print('Pode apenas 1 reserva\n')
+                nomeReserva = input('Insira o nome e a lane [Flavio "Jukes" Fernandes]-[TopLaner] -> ')      
+                 
+                cpf = input('Insira seu cpf (XXX.XXX.XXX-XX) -> ')
+                
+                if len(cpf) > 11 or len(cpf) < 11:
+                    print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
+                    continue  
+                else:
+                    bd1.cursor.execute(f"insert into pessoafisica(cpf) values({cpf})")
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador,reservas) values(%s,%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador,nomeReserva))
+                    bd1.connection.commit()
+                    print('Equipe cadastrada com sucesso.')
+                    a = 1 
+            else:
+                cpf = input('Insira seu cpf (XXX.XXX.XXX-XX) -> ')
+                
+                if len(cpf) > 11 or len(cpf) < 11:
+                    print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
+                    continue  
+                else:
+                    bd1.cursor.execute(f"insert into pessoafisica(cpf) values({cpf})")
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador) values(%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador))
+                    bd1.connection.commit()
+                    print('Equipe cadastrada com sucesso.')
+                    a = 1 
+                
+        else:
+            nomeEquipe = input('Insira o nome da equipe que deseja inscrever no campeonato -> ')
+            nomeTreinador = input('Insira o nome do treinador -> ')
+            topLaner = input('Exemplo nome -> Flavio "Jukes" Fernandes\nNome do top laner [Nome "Nick" Sobrenome] -> ')
+            jungle = input('Nome do jungle [Nome "Nick" Sobrenome] -> ')
+            midLaner = input('Nome do mid laner [Nome "Nick" Sobrenome] -> ')
+            atirador = input('Nome do atirador [Nome "Nick" Sobrenome] -> ')
+            suporte = input('Nome do suporte [Nome "Nick" Sobrenome] -> ')
+            reserva = input('Há reservas s/n? ')
+
+            if reserva == 's':
+                print('Pode apenas 1 reserva\n')
+                nomeReserva = input('Insira o nome e a lane [Flavio "Jukes" Fernandes]-[TopLaner] -> ')      
+                 
+                cnpj = input('Insira seu CNPJ (XX.XXX.XXX/XXXX.XX) -> ')
+                
+                if len(cnpj) > 14 or len(cnpj) < 14:
+                    print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
+                    continue  
+                else:
+                    bd1.cursor.execute(f"insert into pessoajuridica(cnpj) values({cnpj})")
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador,reservas) values(%s,%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador,nomeReserva))
+                    bd1.connection.commit()
+                    print('Equipe cadastrada com sucesso.')
+                    a = 1 
+            else:
+                cnpj = input('Insira seu CNPJ (XX.XXX.XXX/XXXX.XX) -> ')
+                
+                if len(cnpj) > 14 or len(cnpj) < 14:
+                    print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
+                    continue  
+                else:
+                    bd1.cursor.execute(f"insert into pessoajuridica(cnpj) values({cnpj})")
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador) values(%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador))
+                    bd1.connection.commit()
+                    print('Equipe cadastrada com sucesso.')
+                    a = 1 
+               
+
+        bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
+        bd1.connection.commit()
+
+        
 def registrarCampeonato():
     cont1 = 0
     while cont1 == 0:
@@ -54,7 +145,7 @@ def registrarCampeonato():
             if int(cod_Campeonato) != int(codigo_campeonato) or bdcod_camp > 0:
                 print('Código errado ou já usado, digite novamente.')
                 continue
-            elif int(cod_Campeonato) == int(codigo_campeonato):
+            elif int(cod_Campeonato) == int(codigo_campeonato): 
                 print('Correto')
                 cont1 = 1
         else:
@@ -96,9 +187,6 @@ def Entrar():
             pop = 1
         if numRow > 0:
             #usuário logado
-            
-
-           
         
             # if ops == 'configurações':
             #     bd1.cursor.execute("SELECT email FROM usuarios WHERE email = %s",(recebeEmail,))
@@ -112,14 +200,15 @@ def Entrar():
                     tel = input('Digite o número [+DDD][8212345678] -> +')
                     
                     if len(tel) > 13:
-                        print('Número passou do limite [11 Números]')
+                        print('Número passou do limite [13 Números]')
                         continue
 
                     if tel.isnumeric() == True : 
                         bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
-                        pegar = bd1.cursor.fetchall()
-                        if pegar[0] == 0:
-                            bd1.cursor.execute("update usuarios set telefone = %s where usuario = %s",(tel,usuario,))
+                        pegar = bd1.cursor.fetchone()[0]
+                        print(str(pegar))
+                        if pegar == '0':
+                            bd1.cursor.execute("update usuarios set telefone = %s where usuario = %s",(tel,usuario))
                             bd1.connection.commit()
                             print('Vinculado com sucesso')
                             pop = 1
@@ -145,19 +234,20 @@ conti = 0
 
 
 while conti == 0:
-    print('-> Entrar\n-> Criar Conta\n-> Plataformas\n-> Registrar campeonato\n-> Ver campeonatos [ativos]')
-    opc = input()
+    print('1 -> Entrar\n2 -> Criar Conta\n3 -> Registrar campeonato\n4 -> Ver campeonatos [ativos]\n5 -> Registrar Equipe')
+    opc = int(input())
 
-    if opc == 'criar conta':
+    if opc == 2:
         criarconta()
         continue
-    elif opc == 'entrar':
+    elif opc == 1:
         Entrar()
         continue
-    elif opc == 'registrar campeonato':
+    elif opc == 3:
         registrarCampeonato()
         continue
-    elif opc == 'ver campeonatos':
+    elif opc == 4:
         VerCamp()
         exit()
-        
+    elif opc == 5:
+        registrarEquipes()

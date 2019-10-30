@@ -45,7 +45,15 @@ def registrarEquipes():
     nometime = input('Insira o nome da equipe que deseja inscrever no campeonato: ')
     pessoa = int(input('Cadastrar-se como: Pessoa Física(1) ou Juridíca(2): '))
     a = 0 
-    nome = input('digite [NOME "NICK" SOBRENOME]' +)
+    
+
+    nome = input('digite nome: ')
+    sobrenome = input('sobre:? ')
+
+    nick = input('digite nick: ')
+
+    print(f"{nome} " + f'"{nick}"' + f" {sobrenome}")
+
     while a == 0:
         if pessoa == 1:
 

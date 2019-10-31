@@ -8,14 +8,12 @@ CREATE TABLE campeonatos(
 
 CREATE TABLE Jogos(
     cod_jogos serial primary key,
-    cod_campeonato int not null,
     data_jogo date not null,
     hora_jogo time not null,
     times varchar(50) not null,
     vencedor varchar(50) not null,
     local_jogo varchar(60) not null,
-    FOREIGN KEY (cod_Campeonato)
-    REFERENCES campeonatos (cod_Campeonato)
+    cod_Campeonato int references campeonatos(cod_Campeonato)
 )
 
 create table equipes(

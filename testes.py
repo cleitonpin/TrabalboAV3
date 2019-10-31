@@ -1,7 +1,6 @@
 import random
-import bd1
 
-nomeReserva = input('Insira o nome e a lane [Flavio "Jukes" Fernandes]-[TopLaner] -> ')    
-bd1.cursor.execute(f"insert into equipes(reservas) values('{nomeReserva}')") 
-bd1.connection.commit()
-    
+nome = '..-'
+cpf = input('Insira seu cpf (XXX.XXX.XXX-XX) -> ' + nome[1:2] + '')
+print(cpf[0:3])
+print(nome[1:2])

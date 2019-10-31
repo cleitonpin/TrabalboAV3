@@ -42,11 +42,12 @@ def criarconta():
             bd1.connection.commit()
             print('Úsuario cadastrado com sucesso')
             cont = 1 
+
 def registrarEquipes():
 
     nomeORGANIZADOR = input('Insira seu nome pessoal -> ')
-    Endereço = input('Insira seu endereço -> ')
-    contato = input('Insira meio de contato [email, telefone, etc]->')
+    Endereço = input('Insira seu endereço -> ') 
+    contato = input('Insira meio de contato [email, telefone, etc]-> ')
     pessoa = int(input('Cadastrar a equipe como: Pessoa Física [1] ou Juridíca [2] -> '))
     a = 0 
 
@@ -55,12 +56,13 @@ def registrarEquipes():
         if pessoa == 1:
             nomeEquipe = input('Insira o nome da equipe que deseja inscrever no campeonato -> ')
             nomeTreinador = input('Insira o nome do treinador -> ')
-            topLaner = input('Exemplo nome -> Flavio "Jukes" Fernandes\nNome do top laner [Nome "Nick" Sobrenome] -> ')
+            topLaner = input('\nExemplo nome -> Flavio "Jukes" Fernandes\n\nNome do top laner [Nome "Nick" Sobrenome] -> ')
             jungle = input('Nome do jungle [Nome "Nick" Sobrenome] -> ')
             midLaner = input('Nome do mid laner [Nome "Nick" Sobrenome] -> ')
             atirador = input('Nome do atirador [Nome "Nick" Sobrenome] -> ')
             suporte = input('Nome do suporte [Nome "Nick" Sobrenome] -> ')
             reserva = input('Há reservas s/n? ')
+
 
             if reserva == 's':
                 print('Pode apenas 1 reserva\n')
@@ -72,8 +74,12 @@ def registrarEquipes():
                     print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
                     continue  
                 else:
-                    bd1.cursor.execute(f"insert into pessoafisica(cpf) values({cpf})")
-                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador,reservas) values(%s,%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador,nomeReserva))
+     
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador) values(%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador))
+                    #pegando foreign key                   
+                    bd1.cursor.execute("select id_pessoa from organizadorpessoa")
+                    id_pessoa = bd1.cursor.fetchall()[0]
+                    bd1.cursor.execute("insert into pessoafisica(id_pessoa,cpf) values(%s,%s)", (id_pessoa,cpf))
                     bd1.connection.commit()
                     print('Equipe cadastrada com sucesso.')
                     a = 1 
@@ -83,9 +89,11 @@ def registrarEquipes():
                 if len(cpf) > 11 or len(cpf) < 11:
                     print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
                     continue  
-                else:
-                    bd1.cursor.execute(f"insert into pessoafisica(cpf) values({cpf})")
-                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador) values(%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador))
+                else:               
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador) values(%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador))                
+                    bd1.cursor.execute("select id_pessoa from organizadorpessoa WHERE NOME = (%s)", (nomeORGANIZADOR,))
+                    id_pessoa = bd1.cursor.fetchone()
+                    bd1.cursor.execute("insert into pessoafisica(id_pessoa,cpf) values(%s,%s)", (id_pessoa,cpf))
                     bd1.connection.commit()
                     print('Equipe cadastrada com sucesso.')
                     a = 1 
@@ -101,7 +109,7 @@ def registrarEquipes():
             reserva = input('Há reservas s/n? ')
 
             if reserva == 's':
-                print('Pode apenas 1 reserva\n')
+                print('\nPode apenas 1 reserva\n')
                 nomeReserva = input('Insira o nome e a lane [Flavio "Jukes" Fernandes]-[TopLaner] -> ')      
                  
                 cnpj = input('Insira seu CNPJ (XX.XXX.XXX/XXXX.XX) -> ')
@@ -110,8 +118,11 @@ def registrarEquipes():
                     print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
                     continue  
                 else:
-                    bd1.cursor.execute(f"insert into pessoajuridica(cnpj) values({cnpj})")
                     bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador,reservas) values(%s,%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador,nomeReserva))
+                    #pegando foreign key
+                    bd1.cursor.execute("select id_pessoa from organizadorpessoa")
+                    id_pessoa = bd1.cursor.fetchall()[0]
+                    bd1.cursor.execute("insert into pessoajuridica(id_pessoa,cnpj) values(%s,%s)", (id_pessoa,cnpj))
                     bd1.connection.commit()
                     print('Equipe cadastrada com sucesso.')
                     a = 1 
@@ -122,12 +133,17 @@ def registrarEquipes():
                     print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
                     continue  
                 else:
-                    bd1.cursor.execute(f"insert into pessoajuridica(cnpj) values({cnpj})")
                     bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador) values(%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador))
+                    #pegando foreign key
+                    bd1.cursor.execute("select id_pessoa from organizadorpessoa")
+                    id_pessoa = bd1.cursor.fetchall()[0]
+                    bd1.cursor.execute("insert into pessoajuridica(id_pessoa,cnpj) values(%s,%s)", (id_pessoa,cnpj))
                     bd1.connection.commit()
                     print('Equipe cadastrada com sucesso.')
                     a = 1 
                
+        
+
 
         bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
         bd1.connection.commit()

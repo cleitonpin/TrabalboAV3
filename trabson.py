@@ -2,6 +2,7 @@ import bd1
 import random
 
 def criarconta():
+
     cont = 0 
     while cont == 0:
         telefone = 0
@@ -41,46 +42,142 @@ def criarconta():
             bd1.connection.commit()
             print('Úsuario cadastrado com sucesso')
             cont = 1 
+
+
+nomeDaEquipe=''
 def registrarEquipes():
-    nometime = input('Insira o nome da equipe que deseja inscrever no campeonato: ')
-    pessoa = int(input('Cadastrar-se como: Pessoa Física(1) ou Juridíca(2): '))
+    global nomeDaEquipe
+
     a = 0 
-    
-
-    nome = input('digite nome: ')
-    sobrenome = input('sobre:? ')
-
-    nick = input('digite nick: ')
-
-    print(f"{nome} " + f'"{nick}"' + f" {sobrenome}")
 
     while a == 0:
+
+        nomeORGANIZADOR = input('Insira seu nome pessoal -> ')
+        Endereço = input('Insira seu endereço -> ') 
+        contato = input('Insira seu email (válido) para contato -> ')
+        pessoa = int(input('Cadastrar a equipe como: Pessoa Física [1] ou Juridíca [2] -> '))
+
+        verificaremail = (contato.find('@'),contato.find('.com'))
+
+        if verificaremail[0] == -1:
+            print("\n\nErro: email inválido [ausência de: '@']\n")
+            continue
+        if verificaremail[1] == -1:
+            print("\n\nErro: email inválido [ausência de: '.com/.com.br/...']\n")
+            continue
+
         if pessoa == 1:
+            
+            nomeEquipe = input('Insira o nome da equipe que deseja inscrever no campeonato -> ')
+            nomeDaEquipe = nomeEquipe
+            nomeTreinador = input('Insira o nome do treinador -> ')
+            topLaner = input('\nExemplo nome -> Flavio "Jukes" Fernandes\n\nNome do top laner [Nome "Nick" Sobrenome] -> ')
+            jungle = input('Nome do jungle [Nome "Nick" Sobrenome] -> ')
+            midLaner = input('Nome do mid laner [Nome "Nick" Sobrenome] -> ')
+            atirador = input('Nome do atirador [Nome "Nick" Sobrenome] -> ')
+            suporte = input('Nome do suporte [Nome "Nick" Sobrenome] -> ')
+            reserva = input('Há reservas s/n? ')
 
-            cpf = input('Insira seu CPF(XXX.XXX.XXX-XX): ')
-
-            if len(cpf) > 11 or len(cpf) < 11:
-                print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
-                continue
-            else:
-                bd1.cursor.execute("insert into equipe(nome,cnpj,cpf) values(%s,%s,%s,%s)",(nometime,cnpj,cpf))
-                bd1.connection.commit()
-                print('Equipe cadastrada com sucesso.')
-                a = 1
+            if reserva == 's':
+                print('Pode apenas 1 reserva\n')
+                nomeReserva = input('Insira o nome e a lane [Flavio "Jukes" Fernandes]-[TopLaner] -> ')      
+                 
+                cpf = input('Insira seu cpf (XXX.XXX.XXX-XX) -> ')
                 
+                if len(cpf) > 11 or len(cpf) < 11:
+                    print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
+                    continue  
+                else:
 
-        elif pessoa == 2:
+                    bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
+                    bd1.connection.commit()
 
-            cnpj = input('Insira seu CNPJ(XX.XXX.XXX/XXXX.XX): ')
-
-            if len(cnpj) > 14 or len(cnpj) < 14:
-                print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
-                continue  
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador,reservas) values(%s,%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador,nomeReserva))                
+                    bd1.cursor.execute("select id_pessoa from organizadorpessoa WHERE NOME = %s", (nomeORGANIZADOR,))
+                    id_pessoa = bd1.cursor.fetchall()
+ 
+                    bd1.cursor.execute("insert into pessoafisica(id_pessoa,cpf) values(%s,%s)", (id_pessoa[0],cpf))
+                    bd1.connection.commit()
+                    print('Equipe cadastrada com sucesso.')
+                    a = 1 
             else:
-                bd1.cursor.execute("insert into equipe(nome,cnpj,cpf) values(%s,%s,%s,%s)",(nometime,cnpj,cpf))
-                bd1.connection.commit()
-                print('Equipe cadastrada com sucesso.')
-                a = 1 
+                cpf = input('Insira seu cpf (XXX.XXX.XXX-XX) -> ')
+                
+                if len(cpf) > 11 or len(cpf) < 11:
+                    print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
+                    continue  
+                else:                                  
+                    bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
+                    bd1.connection.commit()
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador) values(%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador))                
+                    bd1.cursor.execute("select id_pessoa from organizadorpessoa WHERE NOME = %s", (nomeORGANIZADOR,))
+                    id_pessoa = bd1.cursor.fetchall()
+ 
+                    bd1.cursor.execute("insert into pessoafisica(id_pessoa,cpf) values(%s,%s)", (id_pessoa[0],cpf))
+                    bd1.connection.commit()
+                    print('Equipe cadastrada com sucesso.')
+                    a = 1 
+                
+        else:
+
+
+            nomeEquipe = input('Insira o nome da equipe que deseja inscrever no campeonato -> ')
+            nomeTreinador = input('Insira o nome do treinador -> ')
+            topLaner = input('\nExemplo nome -> Flavio "Jukes" Fernandes\n\nNome do top laner [Nome "Nick" Sobrenome] -> ')
+            jungle = input('Nome do jungle [Nome "Nick" Sobrenome] -> ')
+            midLaner = input('Nome do mid laner [Nome "Nick" Sobrenome] -> ')
+            atirador = input('Nome do atirador [Nome "Nick" Sobrenome] -> ')
+            suporte = input('Nome do suporte [Nome "Nick" Sobrenome] -> ')
+            reserva = input('Há reservas s/n? ')
+
+            if reserva == 's':
+                print('\nPode apenas 1 reserva\n')
+                nomeReserva = input('Insira o nome e a lane [Flavio "Jukes" Fernandes][TopLaner] -> ')      
+                 
+                cnpj = input('Insira seu CNPJ (XX.XXX.XXX/XXXX.XX) -> ')
+                
+                if len(cnpj) > 14 or len(cnpj) < 14:
+                    print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
+                    continue  
+                else:
+                    
+                    #pegando foreign key
+
+                    bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
+                    bd1.connection.commit()
+                    
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador,reservas) values(%s,%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador,nomeReserva))
+                    bd1.cursor.execute("select id_pessoa from organizadorpessoa WHERE NOME = %s", (nomeORGANIZADOR,))
+                    id_pessoa = bd1.cursor.fetchall()[0]
+                    bd1.cursor.execute("insert into pessoajuridica(id_pessoa,cnpj) values(%s,%s)", (id_pessoa,cnpj))
+                    bd1.connection.commit()
+                    print('Equipe cadastrada com sucesso.')
+                    a = 1 
+            else:
+                cnpj = input('Insira seu CNPJ (XX.XXX.XXX/XXXX.XX) -> ')
+                
+                if len(cnpj) > 14 or len(cnpj) < 14:
+                    print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
+                    continue  
+                else:
+
+
+                    bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
+                    bd1.connection.commit()
+                    
+                    bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador) values(%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador))
+                    bd1.cursor.execute("select id_pessoa from organizadorpessoa WHERE NOME = %s", (nomeORGANIZADOR,))
+                    id_pessoa = bd1.cursor.fetchall()[0]
+                    bd1.cursor.execute("insert into pessoajuridica(id_pessoa,cnpj) values(%s,%s)", (id_pessoa,cnpj))
+                    bd1.connection.commit()
+                    print('Equipe cadastrada com sucesso.')
+                    a = 1 
+               
+        
+
+
+        
+
         
 def registrarCampeonato():
     cont1 = 0
@@ -104,9 +201,22 @@ def registrarCampeonato():
     data_inicio = input('Insira a data de ínicio [dd/mm/yyyy] -> ')
     data_fim = input('Insira a data final [dd/mm/yyyy] -> ')
     categoria = input('Insira a categoria -> ')
+    
+    vitoria = 0
+    derrota = 0
+
+    nomeDaEquipe = input('Insira o nome da equipe que você criou -> ')"
 
     bd1.cursor.execute("insert into campeonatos(cod_campeonato,nome,data_inicio,data_fim,categoria) values(%s,%s,%s,%s,%s)",(cod_Campeonato,nome_Campeonato,data_inicio,data_fim,categoria))
     bd1.connection.commit()
+    bd1.cursor.execute(f"select cod_equipe from equipes where nomeequipe = '{nomeDaEquipe}'")
+    codigoEquipeBD = bd1.cursor.fetchone()[0]
+    bd1.cursor.execute(f"select cod_campeonato from campeonatos where cod_campeonato = {cod_Campeonato}")
+    codcampeonato = bd1.cursor.fetchone()[0]
+    print(codcampeonato)
+    bd1.cursor.execute("insert into timecampeonato(cod_campeonato, cod_equipe, vitorias, derrotas) values(%s,%s,%s,%s)", (codcampeonato,codigoEquipeBD,vitoria, derrota))
+    bd1.connection.commit()
+    
     print('Campeonato registrado.')
            
 def VerCamp():
@@ -136,9 +246,6 @@ def Entrar():
             pop = 1
         if numRow > 0:
             #usuário logado
-            
-
-           
         
             # if ops == 'configurações':
             #     bd1.cursor.execute("SELECT email FROM usuarios WHERE email = %s",(recebeEmail,))
@@ -184,22 +291,19 @@ def Entrar():
 
 conti = 0
 
-
 while conti == 0:
-    print('1 -> Entrar\n2 -> Criar Conta\n3 -> Registrar campeonato\n4 -> Ver campeonatos [ativos]\n5 -> Registrar Equipe')
+    print('1 -> Entrar\n2 -> Criar Conta\n3 -> Ver campeonatos [ativos]\n4 -> Registrar Equipe')
     opc = int(input())
 
-    if opc == 2:
+       if opc == 2:
         criarconta()
         continue
     elif opc == 1:
         Entrar()
         continue
     elif opc == 3:
-        registrarCampeonato()
-        continue
-    elif opc == 4:
         VerCamp()
         exit()
-    elif opc == 5:
+    elif opc == 4:
         registrarEquipes()
+        print('1 -> Entrar\n2 -> Criar Conta\n3 -> Registrar campeonato\n4 -> Ver campeonatos [ativos]\n5 -> Registrar Equipe')

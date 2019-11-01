@@ -44,3 +44,11 @@ create table PessoaFisica(
 	id_pessoa int references OrganizadorPessoa(id_pessoa),
 	cpf varchar(100) not null
 );
+
+create table timecampeonato(
+	cod_campeonato integer references campeonatos(cod_campeonato),
+	cod_equipe integer references equipes(cod_equipe),
+	vitorias integer,
+	derrotas integer
+
+);

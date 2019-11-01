@@ -1,6 +1,6 @@
 import bd1
 import random
-
+import time
 def criarconta():
 
     cont = 0 
@@ -43,7 +43,10 @@ def criarconta():
             print('Úsuario cadastrado com sucesso')
             cont = 1 
 
+
+nomeDaEquipe=''
 def registrarEquipes():
+    global nomeDaEquipe
 
     a = 0 
 
@@ -66,6 +69,7 @@ def registrarEquipes():
         if pessoa == 1:
             
             nomeEquipe = input('Insira o nome da equipe que deseja inscrever no campeonato -> ')
+            nomeDaEquipe = nomeEquipe
             nomeTreinador = input('Insira o nome do treinador -> ')
             topLaner = input('\nExemplo nome -> Flavio "Jukes" Fernandes\n\nNome do top laner [Nome "Nick" Sobrenome] -> ')
             jungle = input('Nome do jungle [Nome "Nick" Sobrenome] -> ')
@@ -73,8 +77,6 @@ def registrarEquipes():
             atirador = input('Nome do atirador [Nome "Nick" Sobrenome] -> ')
             suporte = input('Nome do suporte [Nome "Nick" Sobrenome] -> ')
             reserva = input('Há reservas s/n? ')
-
-            
 
             if reserva == 's':
                 print('Pode apenas 1 reserva\n')
@@ -86,9 +88,10 @@ def registrarEquipes():
                     print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
                     continue  
                 else:
-                    
+
                     bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
                     bd1.connection.commit()
+
                     bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador,reservas) values(%s,%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador,nomeReserva))                
                     bd1.cursor.execute("select id_pessoa from organizadorpessoa WHERE NOME = %s", (nomeORGANIZADOR,))
                     id_pessoa = bd1.cursor.fetchall()
@@ -103,8 +106,7 @@ def registrarEquipes():
                 if len(cpf) > 11 or len(cpf) < 11:
                     print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
                     continue  
-                else:               
-                    
+                else:                                  
                     bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
                     bd1.connection.commit()
                     bd1.cursor.execute("insert into equipes(nomeequipe,toplaner,midlaner,jungler,atirador,suport,treinador) values(%s,%s,%s,%s,%s,%s,%s)",(nomeEquipe,topLaner,midLaner,jungle,atirador,suporte,nomeTreinador))                
@@ -117,6 +119,8 @@ def registrarEquipes():
                     a = 1 
                 
         else:
+
+
             nomeEquipe = input('Insira o nome da equipe que deseja inscrever no campeonato -> ')
             nomeTreinador = input('Insira o nome do treinador -> ')
             topLaner = input('\nExemplo nome -> Flavio "Jukes" Fernandes\n\nNome do top laner [Nome "Nick" Sobrenome] -> ')
@@ -128,7 +132,7 @@ def registrarEquipes():
 
             if reserva == 's':
                 print('\nPode apenas 1 reserva\n')
-                nomeReserva = input('Insira o nome e a lane [Flavio "Jukes" Fernandes]-[TopLaner] -> ')      
+                nomeReserva = input('Insira o nome e a lane [Flavio "Jukes" Fernandes][TopLaner] -> ')      
                  
                 cnpj = input('Insira seu CNPJ (XX.XXX.XXX/XXXX.XX) -> ')
                 
@@ -138,6 +142,7 @@ def registrarEquipes():
                 else:
                     
                     #pegando foreign key
+
                     bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
                     bd1.connection.commit()
                     
@@ -155,6 +160,7 @@ def registrarEquipes():
                     print ('Valores inseridos esta fora do padrão, por favor tente novamente.')
                     continue  
                 else:
+
                     bd1.cursor.execute("insert into organizadorpessoa(nome,contato,endereço) values(%s,%s,%s)",(nomeORGANIZADOR,contato,Endereço))
                     bd1.connection.commit()
                     
@@ -166,10 +172,6 @@ def registrarEquipes():
                     print('Equipe cadastrada com sucesso.')
                     a = 1 
                
-        
-
-
-        
 
         
 def registrarCampeonato():
@@ -194,9 +196,33 @@ def registrarCampeonato():
     data_inicio = input('Insira a data de ínicio [dd/mm/yyyy] -> ')
     data_fim = input('Insira a data final [dd/mm/yyyy] -> ')
     categoria = input('Insira a categoria -> ')
+    
+    vitoria = 0
+    derrota = 0
 
-    bd1.cursor.execute("insert into campeonatos(cod_campeonato,nome,data_inicio,data_fim,categoria) values(%s,%s,%s,%s,%s)",(cod_Campeonato,nome_Campeonato,data_inicio,data_fim,categoria))
-    bd1.connection.commit()
+    x = 0
+    while x == 0:
+
+        nomeDaEquipe = input('Insira o nome da equipe que você criou -> ')
+        bd1.cursor.execute("select nomeequipe from equipes where nomeequipe = %s", (nomeDaEquipe,))
+        bdEquipes = bd1.cursor.rowcount
+
+        if bdEquipes > 0:
+            bd1.cursor.execute("insert into campeonatos(cod_campeonato,nome,data_inicio,data_fim,categoria) values(%s,%s,%s,%s,%s)",(cod_Campeonato,nome_Campeonato,data_inicio,data_fim,categoria))
+            bd1.connection.commit()
+            bd1.cursor.execute(f"select cod_equipe from equipes where nomeequipe = '{nomeDaEquipe}'")
+            codigoEquipeBD = bd1.cursor.fetchone()[0]
+            bd1.cursor.execute(f"select cod_campeonato from campeonatos where cod_campeonato = {cod_Campeonato}")
+            codcampeonato = bd1.cursor.fetchone()[0]
+            bd1.cursor.execute("insert into timecampeonato(cod_campeonato, cod_equipe, vitorias, derrotas) values(%s,%s,%s,%s)", (codcampeonato,codigoEquipeBD,vitoria, derrota))
+            bd1.connection.commit()
+
+            print('Campeonato registrado.')
+            x = 1
+        else:
+            print("Equipe inexistente, registre sua equipe primeiro e volte aqui.")
+            x = 1
+    
     print('Campeonato registrado.')
            
 def VerCamp():
@@ -206,7 +232,11 @@ def VerCamp():
     bdcod_camps = bd1.cursor.rowcount
 
     if bdcod_camps > 0:
-        print('verificado')
+        print('\nCampeonato ativo, segue as informacões ↯\n')
+        bd1.cursor.execute(f"select * from campeonatos  where cod_campeonato = '{cod_camps}'")
+        infoCamp = bd1.cursor.fetchall()[0]
+        print(f'Código do campeonato -> {infoCamp[0]}\nNome do campeonato -> {infoCamp[1]}\nData de inicio -> {infoCamp[2]}\nData final -> {infoCamp[3]}\nCategoria -> {infoCamp[4]}\n')
+        time.sleep(10)
     else:
         print('Campeonato inexistente.')
 
@@ -220,19 +250,33 @@ def Entrar():
 
         bd1.cursor.execute("SELECT usuario,senha FROM usuarios WHERE usuario=%s AND senha=%s",(usuario, senha))
         numRow = bd1.cursor.rowcount
-        print('-> Sair\n-> Times registrados\n-> Configurações\n-> Vincular telefone')
-        ops = input()
-        if ops == 'sair':
-            pop = 1
-        if numRow > 0:
-            #usuário logado
         
-            # if ops == 'configurações':
-            #     bd1.cursor.execute("SELECT email FROM usuarios WHERE email = %s",(recebeEmail,))
-            #     emailBD = bd1.cursor.fetchall()
-            #     print(f'Email cadastrado -> {emailBD[0]}')
+        if numRow == 1:
+            #usuário logado
 
-            if ops == 'vincular telefone':
+
+            print('1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Vincular telefone\n5 -> Infomações da conta\n6 -> Sair')
+            ops = int(input('Insira -> '))
+
+            if ops == 5:
+                print('\nSegue abaixo as informações da sua conta ↯\n')
+
+                bd1.cursor.execute("select * from usuarios where usuario = %s",(usuario,))  
+                infoCONTA = bd1.cursor.fetchall()[0]
+
+
+                if infoCONTA[0] == 0: 
+                    bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
+                    infoUSUARIO = bd1.cursor.fetchall()[0]
+                    print(f'Telefone -> Sem registro\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
+                    time.sleep(20)
+                else:
+                    bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
+                    infoUSUARIO = bd1.cursor.fetchall()[0]
+                    print(f'Telefone -> {infoUSUARIO[0]}\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
+                    time.sleep(20)
+
+            if ops == 4:
                 back = 0
                 
                 while back == 0:
@@ -261,32 +305,30 @@ def Entrar():
                     else:
                         print('Apenas números!')
                         continue
-
-            
-
+            if ops == 1:
+                registrarCampeonato()
+            if ops == 2:
+                VerCamp()
+            if ops == 3:
+                registrarEquipes()
+            if ops == 6:
+                print('Deslogado.')
+                time.sleep(2.5)
+                exit()
         else:
             print("Usuário ou senha incorretos!\n")
-            continue
-
+            pop = 1
 
 conti = 0
-
-
 while conti == 0:
-    print('1 -> Entrar\n2 -> Criar Conta\n3 -> Registrar campeonato\n4 -> Ver campeonatos [ativos]\n5 -> Registrar Equipe')
-    opc = int(input())
+    print('1 -> Entrar\n2 -> Criar Conta')
+    opc = int(input('Insira -> '))
 
     if opc == 2:
         criarconta()
-        continue
+
     elif opc == 1:
         Entrar()
-        continue
-    elif opc == 3:
-        registrarCampeonato()
-        continue
-    elif opc == 4:
-        VerCamp()
-        exit()
-    elif opc == 5:
-        registrarEquipes()
+     
+        
+

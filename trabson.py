@@ -262,6 +262,7 @@ def JogosCAMPEONATOS():
                     bd1.cursor.execute('insert into partidas(data_inicio_partidas, hora_partidas, local_partidas, cod_campeonato) values(%s,%s,%s,%s)', (data_inicio_partida, hora_partidas,local_partidas,cod_campsBD))
                     bd1.connection.commit()
                     print('Informações do campeonato atualizada.')
+                    time.sleep(5)
                     DATE = 1
                 else:
                     print('Data não encontrada neste campeonato.')
@@ -308,24 +309,7 @@ def VerEquipes():
         print('Equipe inexistente.')
 
 
-def infoCONTAS():
-    cls()
-    print('\nSegue abaixo as informações da sua conta ↯\n')
-
-    bd1.cursor.execute("select * from usuarios where usuario = %s",(usuario,))  
-    infoCONTA = bd1.cursor.fetchall()[0]
-
-    if infoCONTA[0] == 0: 
-        bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
-        infoUSUARIO = bd1.cursor.fetchall()[0]
-        print(f'Telefone -> Sem registro\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
-        time.sleep(20)
-    else:
-        bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
-        infoUSUARIO = bd1.cursor.fetchall()[0]
-        print(f'Telefone -> {infoUSUARIO[0]}\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
-        time.sleep(20)
-                    
+         
 def Entrar():
     
     usuario = input('Úsuario: ')
@@ -347,7 +331,22 @@ def Entrar():
                 JogosCAMPEONATOS()
                 cls()
             if ops == 5:
-                infoCONTAS()
+                cls()
+                print('\nSegue abaixo as informações da sua conta ↯\n')
+
+                bd1.cursor.execute("select * from usuarios where usuario = %s",(usuario,))  
+                infoCONTA = bd1.cursor.fetchall()[0]
+
+                if infoCONTA[0] == 0: 
+                    bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
+                    infoUSUARIO = bd1.cursor.fetchall()[0]
+                    print(f'Telefone -> Sem registro\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
+                    time.sleep(20)
+                else:
+                    bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
+                    infoUSUARIO = bd1.cursor.fetchall()[0]
+                    print(f'Telefone -> {infoUSUARIO[0]}\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
+                    time.sleep(20)
                 cls()
             if ops == 6:
                 VerEquipes()

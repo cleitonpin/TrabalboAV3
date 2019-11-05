@@ -1,0 +1,10 @@
+Minimundo – Programa de LoL
+
+Uma empresa quer guardar dados de usuários, campeonatos e também organização de campeonatos e demais informações sobre o jogo. 
+-Cada usuário pode ter uma ou mais contas cada conta deve possuir: e-mail, nome de usuário, senha, nome de invocador, data de nascimento. 
+- Cada conta só pode ser vinculada a um número de telefone, caso desejado.
+- Campeonatos devem possuir um nome, código do campeonato, data de início e data de termino e um modo de jogo.
+- Jogos (partida) devem possuir: um código de jogo, data do jogo, horário do jogo, times que vão participar, local do jogo, vencedor do jogo e possuir um código do campeonato no qual o jogo se passará.
+- Equipes devem possuir: Nome, Código da equipe; deve possuir também: um top laner, jungler, mid laner, atirador, suporte, treinador e reserva se houver.
+- Organizadores devem possuir: nome do organizador de equipe, identidade, contato por e-mail, endereço. Organizadores podem ser pessoas físicas ou jurídicas; pessoas físicas devem ter uma identidade e um CPF; pessoas jurídicas devem ter: identidade e um CNPJ.
+-  Equipes que estão participando de campeonatos: devem ter Código da equipe e código do campeonato, contadores de vitória e derrota. 

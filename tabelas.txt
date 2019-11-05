@@ -6,15 +6,14 @@ CREATE TABLE campeonatos(
     categoria varchar(50)
 )
 
-CREATE TABLE Jogos(
-    cod_jogos serial primary key,
-    data_jogo date not null,
-    hora_jogo time not null,
-    times varchar(50) not null,
-    vencedor varchar(50) not null,
-    local_jogo varchar(60) not null,
+CREATE TABLE partidas(
+    cod_partidas serial primary key,
+    data_inicis_partidas date not null,
+    hora_partidas time not null,
+    local_partidas varchar(60) not null,
     cod_Campeonato int references campeonatos(cod_Campeonato)
 )
+
 
 create table equipes(
 	nomeEquipe varchar(100) not null,

@@ -2,6 +2,8 @@ import bd1
 import random
 import time
 import os 
+from datetime import datetime
+import hashlib
 
 def cls():
   os.system('cls' if os.name == 'nt' else 'clear')
@@ -14,23 +16,57 @@ def criarconta():
         usuario = input('Insira seu usuario: ')
         senha = input('Insira sua senha: ')
         email = input('Insira um e-mail válido: ')
-        datanasc = input('Insira sua data de nasimento [dd/mm/yyyy]: ')
+        datanasc = input('Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
         nick = input('Insira seu nick: ')
+        
+        hash = hashlib.md5(str(senha).encode('utf-8'))
+
+        senhaMD5 = hash.hexdigest()
+        
+        verificarData = datanasc.find('/')
+
+        if verificarData == -1:
+            cls()
+            print(f'ERROR: FORMATO DA DATA INVÁLIDO. ausência de "/" [{datanasc}]')
+            time.sleep(5)
+            continue
+        if len(datanasc) < 10:
+            cls()
+            print(f'ERROR: FORMATO DA DATA INVÁLIDO. [{datanasc}]')
+            time.sleep(5)
+            continue
 
         verificaremail = (email.find('@'),email.find('.com')) 
+        str_date = '01/01/2005'
+        date = datetime.strptime(str_date, '%d/%m/%Y')
+        date2 = datetime.strptime(datanasc, '%d/%m/%Y')
 
+        if date2 > date:
+            cls()
+            print('Apenas maiores de 14 anos.')
+            time.sleep(5)
+            continue
         if verificaremail[0] == -1:
-            print("\n\nErro: email inválido [ausência de: '@']\n")
+            cls()
+            print("Erro: email inválido [ausência de: '@']\n")
+            time.sleep(5)
             continue
         if verificaremail[1] == -1:
-            print("\n\nErro: email inválido [ausência de: '.com/.com.br/...']\n")
+            cls()
+            print("Erro: email inválido [ausência de: '.com/.com.br/...']\n")
+            time.sleep(5)
             continue
         if len(usuario) < 4:
+            cls()
             print('Número de caracteres insuficiente[mínimo 4]\n')
+            time.sleep(5)
             continue
         elif len(usuario) > 12:
+            cls()
             print('Número de caracteres acima do indicado[máximo de 12]\n')
+            time.sleep(5)
             continue
+
         bd1.cursor.execute("select usuario from usuarios where usuario = %s", (usuario,))
         rowUsuario = bd1.cursor.rowcount 
         bd1.cursor.execute("select nick from usuarios where nick = %s", (nick,))
@@ -39,15 +75,19 @@ def criarconta():
         row= (rowUsuario, rowNick)
         if row[0] > 0 or row[1] > 0:
             if row[0] > 0:
+                cls()
                 print('ERROR: Usuário já existe')
             if row[1] > 0:
+                cls()
                 print('ERROR: Nick já existe')      
         else: 
             bd1.cursor.execute("insert into usuarios(telefone,email,usuario,nick,datanasc,senha) values(%s,%s,%s,%s,%s,%s)",(telefone,email,usuario,nick,datanasc,senha))
             bd1.connection.commit()
+            cls()
             print('Úsuario cadastrado com sucesso')
+            time.sleep(5)
             cont = 1 
-
+    cls()
 
 nomeDaEquipe=''
 def registrarEquipes():
@@ -199,18 +239,55 @@ def registrarCampeonato():
         else:
             print('Apenas números!')
             continue
-    nome_Campeonato = input('Insira o nome do campeonato -> ')
-    data_inicio = input('Insira a data de ínicio [dd/mm/yyyy] -> ')
-    data_fim = input('Insira a data final [dd/mm/yyyy] -> ')
-    categoria = input('Insira a categoria -> ')
-    
+    DATA  = 0
+    while DATA == 0:
+
+        nome_Campeonato = input('Insira o nome do campeonato -> ')
+        data_inicio = input('Insira a data de ínicio [dd/mm/yyyy] -> ')
+        data_fim = input('Insira a data final [dd/mm/yyyy] -> ')
+        categoria = input('Insira a categoria -> ')
+
+        verificarData = (data_inicio.find('/'),data_fim.find('/'))
+
+        if len(data_inicio) < 10:
+            if verificarData[0] == -1:
+                cls()
+                print(f'ERROR: FORMATO INVÁLIDO. [{data_inicio}]')
+                time.sleep(5)
+                continue
+        if len(data_fim) < 10:
+            if verificarData[1] == -1:
+                cls()
+                print(f'ERROR: FORMATO INVÁLIDO. [{data_fim}]')
+                time.sleep(5)
+                continue
+
+
+
+        date = datetime.strptime(data_inicio, '%d/%m/%Y')
+        date2 = datetime.strptime(data_fim, '%d/%m/%Y')
+        data_Atual = date.today()
+
+        if date >= date2:
+            cls()
+            print('ERROR: FORMATO DA DATA INSERIDA INVÁLIDA')
+            time.sleep(5)
+            continue
+
+        if date <= data_Atual or date2 <= data_Atual:
+            cls()
+            print('ERROR: FORMATO DA DATA INSERIDA INVÁLIDA')
+            time.sleep(5)
+            continue
+        
+        DATA = 1
     vitoria = 0
     derrota = 0
 
     x = 0
     while x == 0:
 
-        nomeDaEquipe = input('Insira o nome da equipe que você criou -> ')
+        nomeDaEquipe = input('\nInsira o nome da equipe que você criou -> ')
         bd1.cursor.execute("select nomeequipe from equipes where nomeequipe = %s", (nomeDaEquipe,))
         bdEquipes = bd1.cursor.rowcount
 
@@ -225,12 +302,14 @@ def registrarCampeonato():
             bd1.connection.commit()
 
             print('Campeonato registrado.')
+            time.sleep(5)
             x = 1
         else:
             print("Equipe inexistente, registre sua equipe primeiro e volte aqui.")
             x = 1
+            time.sleep(5)
     
-    print('Campeonato registrado.')
+    
 
 def JogosCAMPEONATOS():
     cls()
@@ -250,7 +329,13 @@ def JogosCAMPEONATOS():
                 data_inicio_partida = input('Insira a data de ínicio das partidas [dd/mm/yyyy] -> ')
                 hora_partidas = input('Insira a hora de inicio das partidas [hh:mm] -> ')
                 local_partidas = input('Insira o local dos partidas -> ')
+                verificarData = data_inicio_partida.find('/')
 
+                if verificarData == -1:
+                    cls()
+                    print(f'ERROR: FORMATO DA DATA INVÁLIDO. ausência de "/" [{data_inicio_partida}]')
+                    time.sleep(5)
+                    continue
                 bd1.cursor.execute('select data_inicio from campeonatos where data_inicio = %s', (data_inicio_partida,))
                 DATeBD = bd1.cursor.rowcount
 

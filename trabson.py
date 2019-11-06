@@ -1,6 +1,11 @@
 import bd1
 import random
 import time
+import os 
+
+def cls():
+  os.system('cls' if os.name == 'nt' else 'clear')
+
 def criarconta():
 
     cont = 0 
@@ -122,6 +127,7 @@ def registrarEquipes():
 
 
             nomeEquipe = input('Insira o nome da equipe que deseja inscrever no campeonato -> ')
+            nomeDaEquipe = nomeEquipe
             nomeTreinador = input('Insira o nome do treinador -> ')
             topLaner = input('\nExemplo nome -> Flavio "Jukes" Fernandes\n\nNome do top laner [Nome "Nick" Sobrenome] -> ')
             jungle = input('Nome do jungle [Nome "Nick" Sobrenome] -> ')
@@ -175,6 +181,7 @@ def registrarEquipes():
 
         
 def registrarCampeonato():
+    cls()
     cont1 = 0
     while cont1 == 0:
         codigo_campeonato = random.randrange(1001, 9999)
@@ -224,9 +231,53 @@ def registrarCampeonato():
             x = 1
     
     print('Campeonato registrado.')
-           
+
+def JogosCAMPEONATOS():
+    cls()
+    cod_camps = int(input('Insira o código do campeonato que você criou -> '))
+
+    bd1.cursor.execute("select cod_campeonato from campeonatos where cod_campeonato = %s", (cod_camps,))
+    bdcod_camps = bd1.cursor.rowcount
+    DATE = 0
+    
+    if bdcod_camps > 0:
+        while DATE == 0:
+
+            bd1.cursor.execute('select cod_campeonato from partidas where cod_campeonato = %s', (cod_camps,))
+            EXISTENTE = bd1.cursor.rowcount
+
+            if EXISTENTE == 0:
+                data_inicio_partida = input('Insira a data de ínicio das partidas [dd/mm/yyyy] -> ')
+                hora_partidas = input('Insira a hora de inicio das partidas [hh:mm] -> ')
+                local_partidas = input('Insira o local dos partidas -> ')
+
+                bd1.cursor.execute('select data_inicio from campeonatos where data_inicio = %s', (data_inicio_partida,))
+                DATeBD = bd1.cursor.rowcount
+
+                if DATeBD > 0:
+
+                    bd1.cursor.execute('select cod_campeonato from campeonatos where cod_campeonato = %s', (cod_camps,))
+                    cod_campsBD = bd1.cursor.fetchall()[0]
+
+                    bd1.cursor.execute('insert into partidas(data_inicio_partidas, hora_partidas, local_partidas, cod_campeonato) values(%s,%s,%s,%s)', (data_inicio_partida, hora_partidas,local_partidas,cod_campsBD))
+                    bd1.connection.commit()
+                    print('Informações do campeonato atualizada.')
+                    time.sleep(5)
+                    DATE = 1
+                else:
+                    print('Data não encontrada neste campeonato.')
+                    continue
+            else:
+                print('As informações desse campeonato já foram definidas.')
+                time.sleep(10)
+                DATE = 1
+    else:
+        print('Campeonato inexistente.')
+        time.sleep(5)
+
 def VerCamp():
-    cod_camps = int(input('Insira o código do campeonato -> '))
+    cls()
+    cod_camps = int(input('Insira o código do campeonato que você criou -> '))
 
     bd1.cursor.execute("select cod_campeonato from campeonatos where cod_campeonato = %s", (cod_camps,))
     bdcod_camps = bd1.cursor.rowcount
@@ -239,9 +290,11 @@ def VerCamp():
         time.sleep(10)
     else:
         print('Campeonato inexistente.')
+        time.sleep(5)
 
 
 def VerEquipes():
+    cls()
 
     nomeDaEquipe = input('Insira o nome da equipe -> ')
 
@@ -257,6 +310,8 @@ def VerEquipes():
     else:
         print('Equipe inexistente.')
 
+
+         
 def Entrar():
     
     usuario = input('Úsuario: ')
@@ -270,16 +325,19 @@ def Entrar():
         if numRow == 1:
             #usuário logado
 
-
-            print('1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Vincular telefone\n5 -> Infomações da conta\n6 -> Ver Equipes\n7 -> Sair')
+            cls()
+            print('1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Vincular telefone\n5 -> Infomações da conta\n6 -> Ver Equipes\n7 -> Adicionar informações do campeonato\n8 -> Sair')
             ops = int(input('Insira -> '))
 
+            if ops == 7:
+                JogosCAMPEONATOS()
+                cls()
             if ops == 5:
+                cls()
                 print('\nSegue abaixo as informações da sua conta ↯\n')
 
                 bd1.cursor.execute("select * from usuarios where usuario = %s",(usuario,))  
                 infoCONTA = bd1.cursor.fetchall()[0]
-
 
                 if infoCONTA[0] == 0: 
                     bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
@@ -291,9 +349,10 @@ def Entrar():
                     infoUSUARIO = bd1.cursor.fetchall()[0]
                     print(f'Telefone -> {infoUSUARIO[0]}\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
                     time.sleep(20)
-
+                cls()
             if ops == 6:
                 VerEquipes()
+                cls()
             if ops == 4:
                 back = 0
                 
@@ -304,7 +363,7 @@ def Entrar():
                         print('Número passou do limite [13 Números]')
                         continue
 
-                    if tel.isnumeric() == True : 
+                    if tel.isnumeric() == True: 
                         bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
                         pegar = bd1.cursor.fetchone()[0]
                         print(str(pegar))
@@ -325,11 +384,14 @@ def Entrar():
                         continue
             if ops == 1:
                 registrarCampeonato()
+                cls()
             if ops == 2:
                 VerCamp()
+                cls()
             if ops == 3:
                 registrarEquipes()
-            if ops == 7:
+                cls()
+            if ops == 8:
                 print('Deslogado.')
                 time.sleep(2.5)
                 break
@@ -337,6 +399,7 @@ def Entrar():
             print("Usuário ou senha incorretos!\n")
             pop = 1
 
+cls()
 conti = 0
 while conti == 0:
     print('1 -> Entrar\n2 -> Criar Conta')

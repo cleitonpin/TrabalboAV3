@@ -1,21 +1,11 @@
-from tkinter import *
+from datetime import datetime
 
-class Application:
-    def __init__(self, master=None):
-        self.widget1 = Frame(master)
-        self.widget1.pack()
-        self.msg = Label(self.widget1, text="Primeiro widget")
-        self.msg["font"] = ("Bauhaus 93", "15", "bold")
-        self.msg.pack ()
+str_date = input ('DIgite data: ')
+str_date2 = input ('Digite data 2: ')
+date = datetime(str_date, '%d/%m/%Y')
+date2 = datetime(str_date, '%d/%m/%Y')
+print(date)
+print (date2)
 
-
-        self.sair = Button(self.widget1)
-        self.sair["text"] = "EXIT"
-        self.sair["font"] = ("Arial Black", "10")
-        self.sair["width"] = 5
-        self.sair["command"] = self.widget1.quit
-        self.sair.pack()
-  
-root = Tk()
-Application(root)
-root.mainloop()
+if date <= date2:
+  print ('True')

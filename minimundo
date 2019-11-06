@@ -8,4 +8,3 @@ Uma empresa quer guardar dados de usuários, campeonatos e também organização
 - Equipes devem possuir: Nome, Código da equipe; deve possuir também: um top laner, jungler, mid laner, atirador, suporte, treinador e reserva se houver.
 - Organizadores devem possuir: nome do organizador de equipe, identidade, contato por e-mail, endereço. Organizadores podem ser pessoas físicas ou jurídicas; pessoas físicas devem ter uma identidade e um CPF; pessoas jurídicas devem ter: identidade e um CNPJ.
 -  Equipes que estão participando de campeonatos: devem ter Código da equipe e código do campeonato, contadores de vitória e derrota. 
-

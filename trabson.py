@@ -310,7 +310,6 @@ def registrarCampeonato():
             time.sleep(5)
     
     
-
 def JogosCAMPEONATOS():
     cls()
     cod_camps = int(input('Insira o código do campeonato -> '))
@@ -359,9 +358,9 @@ def JogosCAMPEONATOS():
     else:
         print('Campeonato inexistente.')
 
-def VerCamp():
+def VerCamp(cod_camps):
     cls()
-    cod_camps = int(input('Insira o código do campeonato -> '))
+    
 
     bd1.cursor.execute("select cod_campeonato from campeonatos where cod_campeonato = %s", (cod_camps,))
     bdcod_camps = bd1.cursor.rowcount
@@ -376,10 +375,10 @@ def VerCamp():
         print('Campeonato inexistente.')
 
 
-def VerEquipes():
+def VerEquipes(nomeDaEquipe):
     cls()
 
-    nomeDaEquipe = input('Insira o nome da equipe -> ')
+    
 
     bd1.cursor.execute(f"select nomeequipe from equipes where nomeequipe = '{nomeDaEquipe}'" )
     bdEquipes = bd1.cursor.rowcount
@@ -393,94 +392,126 @@ def VerEquipes():
     else:
         print('Equipe inexistente.')
 
+def mudarNICK(nick, usuario):
+    bd1.cursor.execute("select nick, usuario from usuarios where nick = %s and usuario = %s", (nick,usuario))
+    countNICK = bd1.cursor.rowcount
+    N = 0
+    while N == 0:
+        if countNICK > 0:
+            newNICK = input('Insira seu novo nick -> ')
+            bd1.cursor.execute('update usuarios set nick = %s where usuario = %s', (newNICK,usuario))
+            bd1.connection.commit()
+            print('Nick mudado com sucesso!')
+            time.sleep(5)
+            N = 1
+        else:
+            print('Nick ou úsuario não encontrados.')
+            time.sleep(3)
+            N = 1
 
-         
+def check_login(usuario, senha):
+    bd1.cursor.execute("SELECT usuario,senha FROM usuarios WHERE usuario=%s AND senha=%s",(usuario, senha))
+    numRow = bd1.cursor.rowcount
+    pop  = 0
+    while pop == 0:
+        if numRow == 1:
+                #usuário logado
+
+                cls()
+                print('1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Vincular telefone\n5 -> Infomações da conta\n6 -> Ver Equipes\n7 -> Adicionar informações do campeonato\n8 -> Mudar nick\n9 -> Sair')
+                ops = int(input('Insira -> '))
+
+                if ops == 7:
+                    JogosCAMPEONATOS()
+                    cls()
+                    continue
+                if ops == 5:
+                    cls()
+                    print('\nSegue abaixo as informações da sua conta ↯\n')
+
+                    bd1.cursor.execute("select * from usuarios where usuario = %s",(usuario,))  
+                    infoCONTA = bd1.cursor.fetchall()[0]
+
+                    if infoCONTA[0] == 0: 
+                        bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
+                        infoUSUARIO = bd1.cursor.fetchall()[0]
+                        print(f'Telefone -> Sem registro\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
+                        time.sleep(20)
+                    else:
+                        bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
+                        infoUSUARIO = bd1.cursor.fetchall()[0]
+                        print(f'Telefone -> {infoUSUARIO[0]}\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
+                        time.sleep(20)
+                    cls()
+                    continue
+                if ops == 6:
+                    nomeDaEquipe = input('Insira o nome da equipe -> ')
+                    VerEquipes(nomeDaEquipe)
+                    cls()
+                    continue
+                if ops == 4:
+                    back = 0
+                    
+                    while back == 0:
+                        tel = input('Digite o número [+DDD][8212345678] -> +')
+                        
+                        if len(tel) > 13:
+                            print('Número passou do limite [13 Números]')
+                            continue
+
+                        if tel.isnumeric() == True: 
+                            bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
+                            pegar = bd1.cursor.fetchone()[0]
+                            print(str(pegar))
+                            if pegar == '0':
+                                bd1.cursor.execute("update usuarios set telefone = %s where usuario = %s",(tel,usuario))
+                                bd1.connection.commit()
+                                print('Vinculado com sucesso')
+                                back = 1
+                                
+                            else:
+                                bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
+                                bdTelefone = bd1.cursor.fetchall()
+                                
+                                print(f'Conta já vinculada com telefone {bdTelefone[0]}') 
+                                back = 1                 
+                        else:
+                            print('Apenas números!')
+                            continue
+                    continue
+                if ops == 1:
+                    registrarCampeonato()
+                    cls()
+                    continue
+                if ops == 2:
+                    cod_camps = int(input('Insira o código do campeonato -> '))
+                    VerCamp(cod_camps)
+                    cls()
+                    continue
+                if ops == 3:
+                    registrarEquipes()
+                    cls()
+                    continue
+                if ops == 9:
+                    cls()
+                    print('Deslogado.')
+                    time.sleep(2.5)
+                    break
+                if ops == 8:
+                    cls()
+                    usuario = input('Insira seu úsuario -> ')
+                    nick = input('Insira seu nick atual -> ')
+                    mudarNICK(nick, usuario)
+        else:
+            cls()
+            print("Usuário ou senha incorretos!\n")      
+            time.sleep(4)
+
 def Entrar():
-    
     usuario = input('Úsuario: ')
     senha = input('Senha: ')
-    pop = 0
-    while pop == 0:
-
-        bd1.cursor.execute("SELECT usuario,senha FROM usuarios WHERE usuario=%s AND senha=%s",(usuario, senha))
-        numRow = bd1.cursor.rowcount
+    check_login(usuario,senha)
         
-        if numRow == 1:
-            #usuário logado
-
-            cls()
-            print('1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Vincular telefone\n5 -> Infomações da conta\n6 -> Ver Equipes\n7 -> Adicionar informações do campeonato\n8 -> Sair')
-            ops = int(input('Insira -> '))
-
-            if ops == 7:
-                JogosCAMPEONATOS()
-                cls()
-            if ops == 5:
-                cls()
-                print('\nSegue abaixo as informações da sua conta ↯\n')
-
-                bd1.cursor.execute("select * from usuarios where usuario = %s",(usuario,))  
-                infoCONTA = bd1.cursor.fetchall()[0]
-
-                if infoCONTA[0] == 0: 
-                    bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
-                    infoUSUARIO = bd1.cursor.fetchall()[0]
-                    print(f'Telefone -> Sem registro\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
-                    time.sleep(20)
-                else:
-                    bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
-                    infoUSUARIO = bd1.cursor.fetchall()[0]
-                    print(f'Telefone -> {infoUSUARIO[0]}\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
-                    time.sleep(20)
-                cls()
-            if ops == 6:
-                VerEquipes()
-                cls()
-            if ops == 4:
-                back = 0
-                
-                while back == 0:
-                    tel = input('Digite o número [+DDD][8212345678] -> +')
-                    
-                    if len(tel) > 13:
-                        print('Número passou do limite [13 Números]')
-                        continue
-
-                    if tel.isnumeric() == True: 
-                        bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
-                        pegar = bd1.cursor.fetchone()[0]
-                        print(str(pegar))
-                        if pegar == '0':
-                            bd1.cursor.execute("update usuarios set telefone = %s where usuario = %s",(tel,usuario))
-                            bd1.connection.commit()
-                            print('Vinculado com sucesso')
-                            back = 1
-                            
-                        else:
-                            bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
-                            bdTelefone = bd1.cursor.fetchall()
-                            
-                            print(f'Conta já vinculada com telefone {bdTelefone[0]}') 
-                            back = 1                 
-                    else:
-                        print('Apenas números!')
-                        continue
-            if ops == 1:
-                registrarCampeonato()
-                cls()
-            if ops == 2:
-                VerCamp()
-                cls()
-            if ops == 3:
-                registrarEquipes()
-                cls()
-            if ops == 8:
-                print('Deslogado.')
-                time.sleep(2.5)
-                break
-        else:
-            print("Usuário ou senha incorretos!\n")
-            pop = 1
 
 cls()
 conti = 0

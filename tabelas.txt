@@ -4,15 +4,23 @@ CREATE TABLE campeonatos(
     data_inicio date not null,
     data_fim date not null,
     categoria varchar(50)
-)
+);
 
+create table usuarios (
+	telefone varchar(100),
+	id_usuario serial primary key,
+	email varchar(100) not null,
+	usuario varchar(13) not null,
+	senha varchar(100) not null,
+	datanasc date not null
+);
 CREATE TABLE partidas(
     cod_partidas serial primary key,
     data_inicis_partidas date not null,
     hora_partidas time not null,
     local_partidas varchar(60) not null,
     cod_Campeonato int references campeonatos(cod_Campeonato)
-)
+);
 
 
 create table equipes(

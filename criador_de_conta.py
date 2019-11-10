@@ -5,6 +5,7 @@
 # import datetime
 # import time
 from validador import usuario
+from utils.senha import gerador
 
 
 def cria():
@@ -15,18 +16,19 @@ def cria():
 
         # telefone = 0
 
-        usuario_input = ''
-        usuario_invalido = True
-
-        while usuario_invalido:
-            usuario_input = input('Insira seu usuario: ')
-
-            if not usuario.valida(usuario_input):
-                print('Usuário invalido')
-            else:
-                usuario_invalido = False
-
-
+#         usuario_input = ''
+#         usuario_invalido = True
+#
+#         while usuario_invalido:
+#             usuario_input = input('Insira seu usuario: ')
+#
+#             if not usuario.valida(usuario_input):
+#                 print('Usuário invalido')
+#             else:
+#                 usuario_invalido = False
+#
+#        senha = gerador.gera(input('Insira sua senha: '))
+#
 #         data_nascimento = 0
 #         data_valida = True
 #
@@ -44,12 +46,9 @@ def cria():
             continua = 0
 
 
-#        senha = input('Insira sua senha: ')
 #        email = input('Insira um e-mail válido: ')
 #        nick = input('Insira seu nick: ')
 #
-#        hash = hashlib.md5(str(senha).encode('utf-8'))
-#        senhaMD5 = hash.hexdigest()
 #
 #        verificaremail = (email.find('@'),email.find('.com'))
 #

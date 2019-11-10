@@ -1,2 +1,9 @@
+"""data.py"""
+
+
 def valida(data):
-    return data.find('/') == -1 or len(data) < 10
+    """valida
+
+    :param data:
+    """
+    return data.find('/') == 2 and len(data) == 10

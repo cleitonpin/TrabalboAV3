@@ -6,6 +6,7 @@ from datetime import datetime
 import hashlib
 import sys
 import menu
+import criador_de_conta
 
 class color:
     PURPLE = '\033[95m'
@@ -19,93 +20,11 @@ class color:
     UNDERLINE = '\033[4m'
     END = '\033[0m'
 
-menu.show()
-
-def cls():
-  os.system('cls' if os.name == 'nt' else 'clear')
-
-def criarconta():
-
-    cont = 0 
-    while cont == 0:
-        telefone = 0
-        usuario = input('Insira seu usuario: ')
-        senha = input('Insira sua senha: ')
-        email = input('Insira um e-mail válido: ')
-        datanasc = input('Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
-        nick = input('Insira seu nick: ')
-        
-        hash = hashlib.md5(str(senha).encode('utf-8'))
-
-        senhaMD5 = hash.hexdigest()
-        
-        verificarData = datanasc.find('/')
-
-        if verificarData == -1:
-            cls()
-            print(f'ERROR: FORMATO DA DATA INVÁLIDO. ausência de "/" [{datanasc}]')
-            time.sleep(5)
-            continue
-        if len(datanasc) < 10:
-            cls()
-            print(f'ERROR: FORMATO DA DATA INVÁLIDO. [{datanasc}]')
-            time.sleep(5)
-            continue
-
-        verificaremail = (email.find('@'),email.find('.com')) 
-        str_date = '01/01/2005'
-        date = datetime.strptime(str_date, '%d/%m/%Y')
-        date2 = datetime.strptime(datanasc, '%d/%m/%Y')
-
-        if date2 > date:
-            cls()
-            print('Apenas maiores de 14 anos.')
-            time.sleep(5)
-            continue
-        if verificaremail[0] == -1:
-            cls()
-            print("Erro: email inválido [ausência de: '@']\n")
-            time.sleep(5)
-            continue
-        if verificaremail[1] == -1:
-            cls()
-            print("Erro: email inválido [ausência de: '.com/.com.br/...']\n")
-            time.sleep(5)
-            continue
-        if len(usuario) < 4:
-            cls()
-            print('Número de caracteres insuficiente[mínimo 4]\n')
-            time.sleep(5)
-            continue
-        elif len(usuario) > 12:
-            cls()
-            print('Número de caracteres acima do indicado[máximo de 12]\n')
-            time.sleep(5)
-            continue
-
-        bd1.cursor.execute("select usuario from usuarios where usuario = %s", (usuario,))
-        rowUsuario = bd1.cursor.rowcount 
-        bd1.cursor.execute("select nick from usuarios where nick = %s", (nick,))
-        rowNick = bd1.cursor.rowcount 
-
-        row= (rowUsuario, rowNick)
-        if row[0] > 0 or row[1] > 0:
-            if row[0] > 0:
-                cls()
-                print('ERROR: Usuário já existe')
-            if row[1] > 0:
-                cls()
-                print('ERROR: Nick já existe')      
-        else: 
-            bd1.cursor.execute("insert into usuarios(telefone,email,usuario,nick,datanasc,senha) values(%s,%s,%s,%s,%s,%s)",(telefone,email,usuario,nick,datanasc,senha))
-            bd1.connection.commit()
-            cls()
-            print('Úsuario cadastrado com sucesso')
-            time.sleep(5)
-            cont = 1 
-    cls()
+menu.show(color)
+criador_de_conta.cria()
 
 nomeDaEquipe=''
+
 def registrarEquipes():
     global nomeDaEquipe
 

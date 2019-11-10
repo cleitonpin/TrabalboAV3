@@ -156,7 +156,7 @@ def registrarEquipes():
 
         
 def registrarCampeonato():
-    cls()
+    
     cont1 = 0
     while cont1 == 0:
         codigo_campeonato = random.randrange(1001, 9999)
@@ -186,13 +186,13 @@ def registrarCampeonato():
 
         if len(data_inicio) < 10:
             if verificarData[0] == -1:
-                cls()
+                
                 print(f'ERROR: FORMATO INVÁLIDO. [{data_inicio}]')
                 time.sleep(5)
                 continue
         if len(data_fim) < 10:
             if verificarData[1] == -1:
-                cls()
+                
                 print(f'ERROR: FORMATO INVÁLIDO. [{data_fim}]')
                 time.sleep(5)
                 continue
@@ -204,13 +204,13 @@ def registrarCampeonato():
         data_Atual = date.today()
 
         if date >= date2:
-            cls()
+            
             print('ERROR: FORMATO DA DATA INSERIDA INVÁLIDA')
             time.sleep(5)
             continue
 
         if date <= data_Atual or date2 <= data_Atual:
-            cls()
+            
             print('ERROR: FORMATO DA DATA INSERIDA INVÁLIDA')
             time.sleep(5)
             continue
@@ -246,7 +246,7 @@ def registrarCampeonato():
     
     
 def JogosCAMPEONATOS():
-    cls()
+    
     cod_camps = int(input('Insira o código do campeonato -> '))
 
     bd1.cursor.execute("select cod_campeonato from campeonatos where cod_campeonato = %s", (cod_camps,))
@@ -266,7 +266,7 @@ def JogosCAMPEONATOS():
                 verificarData = data_inicio_partida.find('/')
 
                 if verificarData == -1:
-                    cls()
+                    
                     print(f'ERROR: FORMATO DA DATA INVÁLIDO. ausência de "/" [{data_inicio_partida}]')
                     time.sleep(5)
                     continue
@@ -294,7 +294,7 @@ def JogosCAMPEONATOS():
         print('Campeonato inexistente.')
 
 def VerCamp(cod_camps):
-    cls()
+    
     
 
     bd1.cursor.execute("select cod_campeonato from campeonatos where cod_campeonato = %s", (cod_camps,))
@@ -311,7 +311,7 @@ def VerCamp(cod_camps):
 
 
 def VerEquipes(nomeDaEquipe):
-    cls()
+    
     bd1.cursor.execute(f"select nomeequipe from equipes where nomeequipe = '{nomeDaEquipe}'" )
     bdEquipes = bd1.cursor.rowcount
 
@@ -336,12 +336,12 @@ def mudarNICK(nick, usuario):
             print('Nick mudado com sucesso!')
             time.sleep(5)
             N = 1
-            cls()
+            
         else:
             print('Nick ou úsuario não encontrados.')
             time.sleep(3)
             N = 1
-            cls()
+            
 
 
 
@@ -359,7 +359,7 @@ def check_login():
         if numRow == 1:
                 #usuário logado
                 
-                cls()
+                
                 
                 y = 0
                 while y == 0:
@@ -369,7 +369,7 @@ def check_login():
 
                     
                     if ops == 3:
-                        cls()
+                        
                         print(color.YELLOW+'\nSegue abaixo as informações da sua conta ↯\n')
 
                         bd1.cursor.execute("select * from usuarios where usuario = %s",(usuario,))  
@@ -385,7 +385,7 @@ def check_login():
                             infoUSUARIO = bd1.cursor.fetchall()[0]
                             print(color.YELLOW+f'Telefone -> {infoUSUARIO[0]}\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
                             time.sleep(20)
-                        cls()
+                        
                         continue
                     if ops == 2:
                         back = 0
@@ -406,7 +406,7 @@ def check_login():
                                     bd1.connection.commit()
                                     print('Vinculado com sucesso')
                                     time.sleep(4)
-                                    cls()
+                                    
                                     back = 1
                                     
                                 else:
@@ -415,24 +415,24 @@ def check_login():
                                     
                                     print(f'Conta já vinculada com telefone {bdTelefone[0]}') 
                                     time.sleep(4)
-                                    cls()
+                                    
                                     back = 1                 
                             else:
                                 print('Apenas números!')
                                 continue
                         continue
                     if ops == 1:
-                        cls()
+                        
                         registrarEquipes()
                         y = 1
                         pop = 1
                     if ops == 6:
-                        cls()
+                        
                         print('Deslogado.')
                         time.sleep(2.5)
                         sys.exit(0)
                     if ops == 4:
-                        cls()
+                        
                         usuario = input('Insira seu úsuario -> ')
                         nick = input('Insira seu nick atual -> ')
                         mudarNICK(nick, usuario)
@@ -447,25 +447,25 @@ def check_login():
                         else:
                             print('Equipe inexistente.')
                             time.sleep(3)
-                            cls()
+                            
         else:
-            cls()
+            
             print("Usuário ou senha incorretos!\n")      
             continue
-    cls()
+    
     x = 0
     while x == 0:
-        cls()
+        
         menu()
         print(color.RED+'1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Vincular telefone\n5 -> Infomações da conta\n6 -> Ver Equipes\n7 -> Adicionar informações do campeonato\n8 -> Mudar nick\n9 -> Sair')
         opc1 = int(input('Insira -> '))
 
         if opc1 == 7:
             JogosCAMPEONATOS()
-            cls()
+            
             continue
         elif opc1 == 5:
-            cls()
+            
             print('\nSegue abaixo as informações da sua conta ↯\n')
 
             bd1.cursor.execute("select * from usuarios where usuario = %s",(usuario,))  
@@ -481,12 +481,12 @@ def check_login():
                 infoUSUARIO = bd1.cursor.fetchall()[0]
                 print(f'Telefone -> {infoUSUARIO[0]}\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> ******\nData nascimento -> {infoUSUARIO[6]}')
                 time.sleep(20)
-            cls()
+            
             continue
         elif opc1 == 6:
             nomeDaEquipe = input('Insira o nome da equipe -> ')
             VerEquipes(nomeDaEquipe)
-            cls()
+            
             continue
         elif opc1 == 4:
             back = 0
@@ -520,24 +520,24 @@ def check_login():
             continue
         elif opc1 == 1:
             registrarCampeonato()
-            cls()
+            
             continue
         elif opc1 == 2:
             cod_camps = int(input('Insira o código do campeonato -> '))
             VerCamp(cod_camps)
-            cls()
+            
             continue
         elif opc1 == 3:
             registrarEquipes()
-            cls()
+            
             continue
         elif opc1 == 9:
-            cls()
+            
             print('Deslogado.')
             time.sleep(2.5)
             break
         elif opc1 == 8:
-            cls()
+            
             usuario = input('Insira seu úsuario -> ')
             nick = input('Insira seu nick atual -> ')
             mudarNICK(nick, usuario)
@@ -546,7 +546,7 @@ def check_login():
             time.sleep(2.5)
             continue
 
-cls()
+
 conti = 0
 while conti == 0:
     print(color.RED+"""

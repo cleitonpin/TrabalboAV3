@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from validador import data
+from validador import data, usuario
 
 
 class TestValidaData(unittest.TestCase):
@@ -20,3 +20,20 @@ class TestValidaData(unittest.TestCase):
         invalid_date = data.valida('19/19')
 
         self.assertFalse(invalid_date)
+
+
+class TestValidaUsuarioo(unittest.TestCase):
+    """TestValidaUsuarioo"""
+    def test_should_return_false_when_user_size_larger_than_12(self):
+        """test_should_return_true"""
+
+        self.assertFalse(usuario.valida('foo'))
+
+    def test_should_return_false_when_user_size_less_than_4(self):
+        """test_should_return_false"""
+        self.assertFalse(usuario.valida('asdfgqwerzxcva'))
+
+    def test_should_return_true_when_user_size_larger_than_4_and_less_than_12(self):
+        """test_should_return_true_when_user_size_larger_than_4_and_less_than_12"""
+
+        self.assertTrue(usuario.valida('asdfq'))

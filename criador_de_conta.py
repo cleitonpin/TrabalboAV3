@@ -4,7 +4,7 @@
 # import hashlib
 # import datetime
 # import time
-from validador import data
+from validador import usuario
 
 
 def cria():
@@ -15,24 +15,35 @@ def cria():
 
         # telefone = 0
 
-        data_nascimento = 0
-        data_valida = True
+        usuario_input = ''
+        usuario_invalido = True
 
-        while data_valida:
-            data_nascimento = input(
-                'Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
+        while usuario_invalido:
+            usuario_input = input('Insira seu usuario: ')
 
-            if not data.valida(data_nascimento):
-                print('Data inválida')
+            if not usuario.valida(usuario_input):
+                print('Usuário invalido')
             else:
-                data_valida = False
+                usuario_invalido = False
+
+
+#         data_nascimento = 0
+#         data_valida = True
+#
+#         while data_valida:
+#             data_nascimento = input(
+#                 'Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
+#
+#             if not data.valida(data_nascimento):
+#                 print('Data inválida')
+#             else:
+#                 data_valida = False
 
         opcao = input('Deseja continuar, s ou n? ')
         if opcao == 'n':
             continua = 0
 
 
-#        usuario = input('Insira seu usuario: ')
 #        senha = input('Insira sua senha: ')
 #        email = input('Insira um e-mail válido: ')
 #        nick = input('Insira seu nick: ')
@@ -55,14 +66,6 @@ def cria():
 #            continue
 #        if verificaremail[1] == -1:
 #            print("Erro: email inválido [ausência de: '.com/.com.br/...']\n")
-#            time.sleep(5)
-#            continue
-#        if len(usuario) < 4:
-#            print('Número de caracteres insuficiente[mínimo 4]\n')
-#            time.sleep(5)
-#            continue
-#        elif len(usuario) > 12:
-#            print('Número de caracteres acima do indicado[máximo de 12]\n')
 #            time.sleep(5)
 #            continue
 #

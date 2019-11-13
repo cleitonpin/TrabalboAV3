@@ -4,7 +4,7 @@
 # import hashlib
 # import datetime
 # import time
-from validador import email, usuario
+from validador import email, usuario, data
 
 
 def _encerra_programa():
@@ -44,6 +44,21 @@ def _valida_email():
     return email_input
 
 
+def _valida_data():
+
+    data_nascimento = 0
+
+    while True:
+        data_nascimento = input(
+            'Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
+
+        if data.valida(data_nascimento):
+            return False
+        print('Data inválida')
+
+    return data_nascimento
+
+
 def cria():
     """cria"""
 
@@ -55,21 +70,10 @@ def cria():
         #
         #        senha = gerador.gera(input('Insira sua senha: '))
         #
-        #         data_nascimento = 0
-        #         data_valida = True
-        #
-        #         while data_valida:
-        #             data_nascimento = input(
-        #                 'Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
-        #
-        #             if not data.valida(data_nascimento):
-        #                 print('Data inválida')
-        #             else:
-        #                 data_valida = False
 
-
-        usuario = _valida_usuario()
+        # usuario = _valida_usuario()
         # email = _valida_email()
+        # _valida_data()
         continua = _encerra_programa()
 
 

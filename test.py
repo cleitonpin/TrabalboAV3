@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from validador import data, usuario
+from validador import data, usuario, email
 from utils.senha import gerador
 
 
@@ -56,3 +56,16 @@ class TestValidaSenha(unittest.TestCase):
 
         self.assertEqual(senha_a_valida, senha_a)
         self.assertEqual(senha_b_valida, senha_b)
+
+
+class TestValidaEmail(unittest.TestCase):
+    """TestValidaEmail"""
+    def test_should_return_true_when_valid_email(self):
+        """test_should_return_true_when_valid_email"""
+
+        self.assertTrue(email.valida('elicaciocardoso@gmail.com'))
+
+    def test_should_return_false_when_invalid_email(self):
+        """test_should_return_false_when_invalid_email"""
+
+        self.assertFalse(email.valida('elicaiojdfkajdfjaçdjfa'))

@@ -4,8 +4,30 @@
 # import hashlib
 # import datetime
 # import time
-from validador import usuario
-from utils.senha import gerador
+from validador import email
+
+
+def _encerra_programa():
+
+    opcao = input('Deseja continuar, s ou n? ')
+
+    if opcao == 'n':
+        return 0
+    return 1
+
+
+def _valida_email():
+
+    email_input = ''
+
+    while True:
+
+        email_input = input('Insira um e-mail válido: ')
+
+        if email.valida(email_input):
+            return False
+        print('email inválido')
+    return email_input
 
 
 def cria():
@@ -16,55 +38,42 @@ def cria():
 
         # telefone = 0
 
-#         usuario_input = ''
-#         usuario_invalido = True
-#
-#         while usuario_invalido:
-#             usuario_input = input('Insira seu usuario: ')
-#
-#             if not usuario.valida(usuario_input):
-#                 print('Usuário invalido')
-#             else:
-#                 usuario_invalido = False
-#
-#        senha = gerador.gera(input('Insira sua senha: '))
-#
-#         data_nascimento = 0
-#         data_valida = True
-#
-#         while data_valida:
-#             data_nascimento = input(
-#                 'Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
-#
-#             if not data.valida(data_nascimento):
-#                 print('Data inválida')
-#             else:
-#                 data_valida = False
+        #         usuario_input = ''
+        #         usuario_invalido = True
+        #
+        #         while usuario_invalido:
+        #             usuario_input = input('Insira seu usuario: ')
+        #
+        #             if not usuario.valida(usuario_input):
+        #                 print('Usuário invalido')
+        #             else:
+        #                 usuario_invalido = False
+        #
+        #        senha = gerador.gera(input('Insira sua senha: '))
+        #
+        #         data_nascimento = 0
+        #         data_valida = True
+        #
+        #         while data_valida:
+        #             data_nascimento = input(
+        #                 'Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
+        #
+        #             if not data.valida(data_nascimento):
+        #                 print('Data inválida')
+        #             else:
+        #                 data_valida = False
 
-        opcao = input('Deseja continuar, s ou n? ')
-        if opcao == 'n':
-            continua = 0
+        _valida_email()
+        continua = _encerra_programa()
 
 
-#        email = input('Insira um e-mail válido: ')
 #        nick = input('Insira seu nick: ')
-#
-#
-#        verificaremail = (email.find('@'),email.find('.com'))
 #
 #        str_date = '01/01/2005'
 #        date = datetime.strptime(str_date, '%d/%m/%Y')
 #        date2 = datetime.strptime(data, '%d/%m/%Y')
 #        if date2 > date:
 #            print('Apenas maiores de 14 anos.')
-#            time.sleep(5)
-#            continue
-#        if verificaremail[0] == -1:
-#            print("Erro: email inválido [ausência de: '@']\n")
-#            time.sleep(5)
-#            continue
-#        if verificaremail[1] == -1:
-#            print("Erro: email inválido [ausência de: '.com/.com.br/...']\n")
 #            time.sleep(5)
 #            continue
 #

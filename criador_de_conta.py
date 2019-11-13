@@ -5,6 +5,7 @@
 # import datetime
 # import time
 from validador import email, usuario, data
+from utils.senha import gerador
 
 
 def _encerra_programa():
@@ -25,9 +26,14 @@ def _valida_usuario():
         usuario_input = input('Insira seu usuario: ')
 
         if usuario.valida(usuario_input):
-            return False
+            break
         print('Usuário invalido')
     return usuario_input
+
+
+def _gera_senha():
+
+    return gerador.gera(input('Insira sua senha: '))
 
 
 def _valida_email():
@@ -39,7 +45,7 @@ def _valida_email():
         email_input = input('Insira um e-mail válido: ')
 
         if email.valida(email_input):
-            return False
+            break
         print('email inválido')
     return email_input
 
@@ -53,7 +59,7 @@ def _valida_data():
             'Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
 
         if data.valida(data_nascimento):
-            return False
+            break
         print('Data inválida')
 
     return data_nascimento
@@ -67,13 +73,21 @@ def cria():
 
         # telefone = 0
 
-        #
-        #        senha = gerador.gera(input('Insira sua senha: '))
-        #
+        usuario = _valida_usuario()
+        senha = _gera_senha()
+        email = _valida_email()
+        data = _valida_data()
 
-        # usuario = _valida_usuario()
-        # email = _valida_email()
-        # _valida_data()
+        jogador = """
+            Jogador 01
+            Nome: {USUARIO},
+            E-mail: {EMAIL},
+            Senha: {SENHA}
+            Data: {DATA}
+        """.format(USUARIO=usuario, SENHA=senha, EMAIL=email, DATA=data)
+
+        print(jogador)
+
         continua = _encerra_programa()
 
 

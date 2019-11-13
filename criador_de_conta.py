@@ -4,7 +4,7 @@
 # import hashlib
 # import datetime
 # import time
-from validador import email
+from validador import email, usuario
 
 
 def _encerra_programa():
@@ -14,6 +14,20 @@ def _encerra_programa():
     if opcao == 'n':
         return 0
     return 1
+
+
+def _valida_usuario():
+    """_valida_usuario"""
+
+    usuario_input = ''
+
+    while True:
+        usuario_input = input('Insira seu usuario: ')
+
+        if usuario.valida(usuario_input):
+            return False
+        print('Usuário invalido')
+    return usuario_input
 
 
 def _valida_email():
@@ -38,16 +52,6 @@ def cria():
 
         # telefone = 0
 
-        #         usuario_input = ''
-        #         usuario_invalido = True
-        #
-        #         while usuario_invalido:
-        #             usuario_input = input('Insira seu usuario: ')
-        #
-        #             if not usuario.valida(usuario_input):
-        #                 print('Usuário invalido')
-        #             else:
-        #                 usuario_invalido = False
         #
         #        senha = gerador.gera(input('Insira sua senha: '))
         #
@@ -63,7 +67,9 @@ def cria():
         #             else:
         #                 data_valida = False
 
-        _valida_email()
+
+        usuario = _valida_usuario()
+        # email = _valida_email()
         continua = _encerra_programa()
 
 

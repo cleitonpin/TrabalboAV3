@@ -10,6 +10,7 @@ create table usuarios (
 	telefone varchar(100),
 	id_usuario serial primary key,
 	email varchar(100) not null,
+	nick varchar(100) not null,
 	usuario varchar(13) not null,
 	senha varchar(100) not null,
 	datanasc date not null

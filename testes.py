@@ -1,57 +1,29 @@
-import random
-from cassiopeia import Champion, Champions
-import os
-import cassiopeia as cass
 
-cass.set_riot_api_key("RGAPI-ec0f05eb-feb1-487b-9bc9-fd293b54266d")  # This overrides the value set in your configuration/settings.
-cass.set_default_region("BR")
+import keyboard
+# keyboard.KEY_DOWN = 'down'
+# keyboard.KEY_UP = 'up'
 
-# summoner = cass.get_summoner(name='Best Rengar AL')
+# keyboard.add_hotkey
 
-# print(f"{summoner.name} é level {summoner.level} do servidor {summoner.region}.")
+keyboard.press_and_release('shift+s, space')
 
-def get_champions():
-   # champions = Champions(region='BR')
+keyboard.write('A rápida raposa marrom pula sobre o cachorro preguiçoso.')
 
-   # for champion in champions:
-   #       print(champion.name, champion.id)
+keyboard.add_hotkey('ctrl+shift+a', print, args=('triggered', 'hotkey'))
 
+# Press PAGE UP then PAGE DOWN to type "foobar".
+keyboard.add_hotkey('page up, page down', lambda: keyboard.write('foobar'))
 
+# Blocks until you press esc.
+keyboard.wait('esc')
 
-   camp = input('Insira o nome do campeão -> ')
-   # annie = Champion(name="Annie", region="NA")
-   annie = Champion(name=camp, region="BR")
+# Record events until 'esc' is pressed.
+recorded = keyboard.record(until='esc')
+# Then replay back at three times the speed.
+keyboard.play(recorded, speed_factor=3)
 
- 
-   cls()
-   print(f"""
-Campeão: {annie.name}
+# Type @@ then press space to replace with abbreviation.
+keyboard.add_abbreviation('@@', 'my.long.email@example.com')
 
-Dano de ataque: {annie.stats.attack_damage} (+{annie.stats.attack_damage_per_level} por nível)
-Vida: {annie.stats.health} (+{annie.stats.health_per_level} por nível)
-Mana: {annie.stats.mana} (+{annie.stats.mana_per_level} por nível)
-Armadura: {annie.stats.armor} (+{annie.stats.armor_per_level} por nível)
-Resistência mágica: {annie.stats.magic_resist} (+{annie.stats.magic_resist_per_level} por nível) 
-
-""")
- 
-   # print(annie.region)
-   # print(annie.blurb)
-   #nome do champion
-   #print(annie.name)
-   
-   #titulo do champion
-   #print(annie.title)
-
-   #dificuldade do champion
-   # print(annie.info.difficulty)
-   # #nome da passiva
-   # print(annie.passive.name)
-
-
-   # print({item.name: count for item, count in annie.recommended_itemsets[0].item_sets[0].items.items()})
-   # print(annie.free_to_play)
-   # print(annie._Ghost__all_loaded)
-
-if __name__ == "__main__":
-   get_champions()
+# Block forever, like `while True`.
+keyboard.wait()

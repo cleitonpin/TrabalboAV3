@@ -114,8 +114,6 @@ def cria():
         continua = _encerra_programa()
 
 
-cria()
-
 #        nick = input('Insira seu nick: ')
 #
 #        str_date = '01/01/2005'

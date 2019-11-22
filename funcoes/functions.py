@@ -1,4 +1,4 @@
-import bd1
+from funcoes import bd1
 import random
 import time
 import os 
@@ -480,7 +480,7 @@ def check_login():
 # import datetime
 import time
 import os
-import bd1
+from funcoes import bd1
 from validador import email, usuario, data
 from utils.senha import gerador
 

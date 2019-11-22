@@ -5,7 +5,7 @@
 # import datetime
 import time
 import os
-import bd1
+from funcoes import bd1
 from validador import email, usuario, data
 from utils.senha import gerador
 

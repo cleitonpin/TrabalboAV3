@@ -1,10 +1,5 @@
-import bd1
-import random
-import time
+
 import os 
-from datetime import datetime
-import hashlib
-import sys
 from funcoes import functions
 
 class color:

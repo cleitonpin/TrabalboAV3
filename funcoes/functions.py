@@ -97,7 +97,7 @@ Resistência mágica: {annie.stats.magic_resist} (+{annie.stats.magic_resist_per
 
 """)
 
-    time.sleep(10)
+    null = input('')
         
 def JogosCAMPEONATOS():
     cls()

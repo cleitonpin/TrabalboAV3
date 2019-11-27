@@ -1,4 +1,3 @@
-
 import os 
 from funcoes import functions
 
@@ -37,7 +36,3 @@ while conti == 0:
 
     elif opc == 1:
         functions.check_login()
-     
-        
-
- 

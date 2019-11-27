@@ -6,9 +6,18 @@ from datetime import datetime
 import hashlib
 import sys
 from funcoes import data, email, usuario, criador_de_conta, functions
+from cassiopeia import Champion, Champions
+import cassiopeia as cass
+from funcoes import bd1
+from validador import email, usuario, data
+from utils.senha import gerador
+
+    
+cass.set_riot_api_key("RGAPI-ac923fc3-6bfd-430b-b693-639e0d1dbc53")  # This overrides the value set in your configuration/settings.
+cass.set_default_region("BR")
 
 
-
+#cores 
 class color:
    PURPLE = '\033[95m'
    CYAN = '\033[96m'
@@ -20,23 +29,28 @@ class color:
    BOLD = '\033[1m'
    UNDERLINE = '\033[4m'
    END = '\033[0m'
+
+# menu
 def menu():
     print(color.RED+"#"*53+color.END)
     print(color.RED+"#                                                   #"+color.END)
     print(color.RED+"#"+color.END+color.DARKCYAN+"                      RifsPopo                     "+color.END+color.RED+"#"+color.END)
     print(color.RED+"#                                                   #"+color.END)
     print(color.RED+"#"*53+color.END)
-   
+#função limpar tela
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
-
+#função mudar nick
 def mudarNICK(nick, usuario):
+    #selecionando o nick e usuarios para verificação
     bd1.cursor.execute("select nick, usuario from usuarios where nick = %s and usuario = %s", (nick,usuario))
     countNICK = bd1.cursor.rowcount
     N = 0
+    #verificando de nick e usuario digitado existeno bd
     while N == 0:
         if countNICK > 0:
             newNICK = input('Insira seu novo nick -> ')
+            #mudando o nick ja existente
             bd1.cursor.execute('update usuarios set nick = %s where usuario = %s', (newNICK,usuario))
             bd1.connection.commit()
             print('Nick mudado com sucesso!')
@@ -51,7 +65,6 @@ def mudarNICK(nick, usuario):
 def VerCamp(cod_camps):
     cls()
     
-
     bd1.cursor.execute("select cod_campeonato from campeonatos where cod_campeonato = %s", (cod_camps,))
     bdcod_camps = bd1.cursor.rowcount
 
@@ -63,14 +76,6 @@ def VerCamp(cod_camps):
         time.sleep(10)
     else:
         print('Campeonato inexistente.')
-
-from cassiopeia import Champion, Champions
-import cassiopeia as cass
-import os
-    
-cass.set_riot_api_key("RGAPI-ac923fc3-6bfd-430b-b693-639e0d1dbc53")  # This overrides the value set in your configuration/settings.
-cass.set_default_region("BR")
-
 
 def get_champions():
    # champions = Champions(region='BR')
@@ -97,8 +102,8 @@ Resistência mágica: {annie.stats.magic_resist} (+{annie.stats.magic_resist_per
 
 """)
 
-    null = input('')
-        
+    null = input('aperte enter para contiuar')
+
 def JogosCAMPEONATOS():
     cls()
     cod_camps = int(input('Insira o código do campeonato -> '))
@@ -217,6 +222,7 @@ def registrarCampeonato():
         time.sleep(2)
         
 def registrarEquipes():
+    cls()
     global nomeDaEquipe
 
     a = 0 
@@ -225,7 +231,7 @@ def registrarEquipes():
 
         nomeORGANIZADOR = input('Insira seu nome pessoal -> ')
         Endereço = input('Insira seu endereço -> ') 
-        contato = input('Insira seu email (válido) para contato -> ')
+        contato = _valida_email()
         pessoa = int(input('Cadastrar a equipe como: Pessoa Física [1] ou Juridíca [2] -> '))
 
         verificaremail = (contato.find('@'),contato.find('.com'))
@@ -373,14 +379,14 @@ def check_login():
             #usuário logado
             cls()
             menu()
-            print(color.RED+'1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Vincular telefone\n5 -> Infomações da conta\n6 -> Ver Equipes\n7 -> Adicionar informações das partidas no campeonato\n8 -> Mudar nick\n9 - > Ver dados dos campeões\n0 -> Sair')
+            print(color.RED+'1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Infomações da conta\n5 -> Ver Equipes\n6 -> Adicionar informações das partidas no campeonato\n7 -> Configurações da conta\n0 -> Sair')
             opc1 = int(input('Insira -> '))
 
-            if opc1 == 7:
+            if opc1 == 6:
                 functions.JogosCAMPEONATOS()
                 cls()
                 continue
-            elif opc1 == 5:
+            elif opc1 == 4:
                 cls()
                 print('\nSegue abaixo as informações da sua conta ↯\n')
 
@@ -399,39 +405,9 @@ def check_login():
                     time.sleep(20)
                 cls()
                 continue
-            elif opc1 == 6:
+            elif opc1 == 5:
                 functions.VerEquipes(nomeDaEquipe = input('Insira o nome da equipe -> '))
                 cls()
-                continue
-            elif opc1 == 4:
-                back = 0
-                            
-                while back == 0:
-                    tel = input('Digite o número [+DDD][8212345678] -> +')
-                                
-                    if len(tel) > 13:
-                        print('Número passou do limite [13 Números]')
-                        continue
-
-                    if tel.isnumeric() == True: 
-                        bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
-                        pegar = bd1.cursor.fetchone()[0]
-                        print(str(pegar))
-                        if pegar == '0':
-                            bd1.cursor.execute("update usuarios set telefone = %s where usuario = %s",(tel,usuario))
-                            bd1.connection.commit()
-                            print('Vinculado com sucesso')
-                            back = 1
-                                        
-                        else:
-                            bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
-                            bdTelefone = bd1.cursor.fetchall()
-                                    
-                            print(f'Conta já vinculada com telefone {bdTelefone[0]}') 
-                            back = 1                 
-                    else:
-                        print('Apenas números!')
-                        continue
                 continue
             elif opc1 == 1:
                 functions.registrarCampeonato()
@@ -450,14 +426,9 @@ def check_login():
                 print('Deslogado.')
                 time.sleep(2.5)
                 break
-            elif opc1 == 8:
+            elif opc1 == 7:
                 cls()
-                usuario = input('Insira seu úsuario -> ')
-                nick = input('Insira seu nick atual -> ')
-                functions.mudarNICK(nick, usuario)
-            elif opc1 == 9:
-                cls()
-                functions.get_champions()
+                configs(opc1)
                 cls()
                 continue
             else:
@@ -473,20 +444,121 @@ def check_login():
             pop = 1
     cls()   
 
+def mudarSENHA(usuario, senha):
+
+    C = True
+
+    while C == True:
+
+        bd1.cursor.execute("select senha, usuario from usuarios where senha = %s and usuario = %s", (senha,usuario))
+        countpassw = bd1.cursor.rowcount
+
+        if countpassw > 0:
+            newSENHA = input('Insira sua nova senha -> ')
+            senhaCRYPTED = hashlib.md5(str(newSENHA).encode('utf-8')).hexdigest()
+            bd1.cursor.execute('update usuarios set senha = %s where usuario = %s', (senhaCRYPTED,usuario))
+            bd1.connection.commit()
+            print('Senha mudada com sucesso!')
+            time.sleep(1.5)
+            C = False
+            cls()
+        else:
+            print('Senha ou úsuario digitados incorretos!')
+            continue
+            cls()
+            
+def mudaremail(usuario, email):
+    C = True
+
+    while C == True:
+
+        bd1.cursor.execute("select senha, usuario from usuarios where email = %s and usuario = %s", (email,usuario))
+        countemail = bd1.cursor.rowcount
+
+        if countemail > 0:
+            newEmail = input('Insira seu novo email -> ')
+            bd1.cursor.execute('update usuarios set email = %s where usuario = %s', (newEmail,usuario))
+            bd1.connection.commit()
+            print('Email mudado com sucesso!')
+            time.sleep(1.5)
+            C = False
+            cls()
+        else:
+            print('Email ou úsuario digitados incorretos!')
+            continue
+            cls()
+
+def configs(opc1):
+    
+    cf = True
+    while cf == True:
+        print('1 -> Mudar Nick\n2 -> Mudar senha\n3 -> Mudar nome de úsuario\n4 -> Mudar email\n5 -> Vincular telefone\n0 -> Voltar')    
+        config = int(input('Insira [1-5]-> '))
+        if config == 5:
+            x = True         
+            while x == True:
+                
+                user = True
+                while user == True:
+                    usuario = input('Digite seu úsuario -> ')
+                    bd1.cursor.execute("select usuario from usuarios where usuario = %s",(usuario,)) 
+                    use = bd1.cursor.rowcount
+
+                    if use > 0:
+                        user = False
+                    else:
+                        print("Úsuario digitado não encontrado")
+                        user = True
+                tel = input('Digite o número [+DD][8212345678] -> +')
+                                        
+                if len(tel) > 13:
+                    print('Número passou do limite [13 Números]')
+                    continue
+
+                if tel.isnumeric() == True: 
+
+                    bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
+                    pegar = bd1.cursor.fetchone()[0]
+                    #print(str(pegar))
+                    if str(pegar) == '0':
+                        bd1.cursor.execute("update usuarios set telefone = %s where usuario = %s",(tel,usuario))
+                        bd1.connection.commit()
+                        print('Vinculado com sucesso')
+                        cls()
+                        x = False             
+                    else:
+                        bd1.cursor.execute("select telefone from usuarios where usuario = %s",(usuario,))  
+                        bdTelefone = bd1.cursor.fetchall()
+                                                
+                        print(f'Conta já vinculada com telefone {bdTelefone[0]}') 
+                        cls()
+                        x = False                
+                else:
+                    print('Apenas números')
+                    continue
+        elif config == 1:
+            cls()
+            mudarNICK(input('Insira seu nick atual -> '), input('Insira seu úsuario -> '))
+        elif config == 0:
+            cf = False
+        elif config == 2:
+            senha = input('Insira sua senha atual: ')
+            senha2 = hashlib.md5(str(senha).encode('utf-8')).hexdigest()
+            mudarSENHA(input('Insira seu nome de úsuario -> '), senha2)
+            cls()
+        elif config == 4:
+            mudaremail(input('Insira seu nome de úsuario -> '), input('Insira seu email atual -> '))
+
+
 """trabson.py"""
 # -*- utf-8 -*-
 
 # import hashlib
 # import datetime
-import time
-import os
-from funcoes import bd1
-from validador import email, usuario, data
-from utils.senha import gerador
 
 def _encerra_programa():
 
-    opcao = input('Deseja continuar, s ou n? ')
+    opcao = input('Deseja criar novamente, s ou n? ')
 
     if opcao == 'n':
         return 0
@@ -499,7 +571,7 @@ def _valida_usuario():
     usuario_input = ''
 
     while True:
-        usuario_input = input('Insira seu usuario: ')
+        usuario_input = input('Insira seu usuario -> ')
 
         if usuario.valida(usuario_input):
             break
@@ -509,7 +581,7 @@ def _valida_usuario():
 
 def _gera_senha():
 
-    return gerador.gera(input('Insira sua senha: '))
+    return gerador.gera(input('Insira sua senha -> '))
 
 
 def _valida_email():
@@ -518,7 +590,7 @@ def _valida_email():
 
     while True:
 
-        email_input = input('Insira um e-mail válido: ')
+        email_input = input('Insira um e-mail válido -> ')
 
         if email.valida(email_input):
             break
@@ -532,7 +604,7 @@ def _valida_data():
 
     while True:
         data_nascimento = input(
-            'Insira sua data de nascimento [+14] [dd/mm/yyyy]: ')
+            'Insira sua data de nascimento [+14] [dd/mm/yyyy] -> ')
 
         if data.valida(data_nascimento):
             break

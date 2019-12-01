@@ -1,14 +1,12 @@
-from funcoes import bd1
 import random
 import time
 import os 
 from datetime import datetime
 import hashlib
 import sys
-from funcoes import data, email, usuario, criador_de_conta, functions
+from funcoes import data, email, usuario, criador_de_conta, functions, conta, bd1, equipes
 from cassiopeia import Champion, Champions
 import cassiopeia as cass
-from funcoes import bd1
 from validador import email, usuario, data
 from utils.senha import gerador
 
@@ -40,28 +38,7 @@ def menu():
 #função limpar tela
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
-#função mudar nick
-def mudarNICK(nick, usuario):
-    #selecionando o nick e usuarios para verificação
-    bd1.cursor.execute("select nick, usuario from usuarios where nick = %s and usuario = %s", (nick,usuario))
-    countNICK = bd1.cursor.rowcount
-    N = 0
-    #verificando de nick e usuario digitado existeno bd
-    while N == 0:
-        if countNICK > 0:
-            newNICK = input('Insira seu novo nick -> ')
-            #mudando o nick ja existente
-            bd1.cursor.execute('update usuarios set nick = %s where usuario = %s', (newNICK,usuario))
-            bd1.connection.commit()
-            print('Nick mudado com sucesso!')
-            time.sleep(5)
-            N = 1
-            cls()
-        else:
-            print('Nick ou úsuario não encontrados.')
-            time.sleep(3)
-            N = 1
-            cls()
+
 def VerCamp(cod_camps):
     cls()
     
@@ -102,9 +79,9 @@ Resistência mágica: {annie.stats.magic_resist} (+{annie.stats.magic_resist_per
 
 """)
 
-    null = input('aperte enter para contiuar')
+    input('aperte enter para contiuar')
 
-def JogosCAMPEONATOS():
+def InfoCAMPEONATOS():
     cls()
     cod_camps = int(input('Insira o código do campeonato -> '))
 
@@ -177,24 +154,20 @@ def registrarCampeonato():
         nome_Campeonato = input('Insira o nome do campeonato -> ')
         data_inicio = input('Insira a data de ínicio [dd/mm/yyyy] -> ')
         data_fim = input('Insira a data final [dd/mm/yyyy] -> ')
-        categoria = input('Insira a categoria -> ')
+        categoria = input('Insira a categoria do campeonato -> ')
 
         verificarData = (data_inicio.find('/'),data_fim.find('/'))
 
-        if len(data_inicio) < 10:
-            if verificarData[0] == -1:
-                cls()
-                print(f'ERROR: FORMATO INVÁLIDO. [{data_inicio}]')
-                time.sleep(5)
-                continue
-        if len(data_fim) < 10:
-            if verificarData[1] == -1:
-                cls()
-                print(f'ERROR: FORMATO INVÁLIDO. [{data_fim}]')
-                time.sleep(5)
-                continue
-
-
+        if len(data_inicio) < 10 or verificarData[0] == -1:
+            cls()
+            print(f'ERROR: FORMATO INVÁLIDO. [{data_inicio}]')
+            time.sleep(5)
+            continue
+        if len(data_fim) < 10 or verificarData[1] == -1:
+            cls()
+            print(f'ERROR: FORMATO INVÁLIDO. [{data_fim}]')
+            time.sleep(5)
+            continue
 
         date = datetime.strptime(data_inicio, '%d/%m/%Y')
         date2 = datetime.strptime(data_fim, '%d/%m/%Y')
@@ -203,17 +176,15 @@ def registrarCampeonato():
         if date >= date2:
             cls()
             print('ERROR: FORMATO DA DATA INSERIDA INVÁLIDA')
-            time.sleep(5)
+            time.sleep(2.5)
             continue
 
         if date <= data_Atual or date2 <= data_Atual:
             cls()
             print('ERROR: FORMATO DA DATA INSERIDA INVÁLIDA')
-            time.sleep(5)
+            time.sleep(2.5)
             continue
         
- 
-    
         bd1.cursor.execute("insert into campeonatos(cod_campeonato,nome,data_inicio,data_fim,categoria) values(%s,%s,%s,%s,%s)",(cod_Campeonato,nome_Campeonato,data_inicio,data_fim,categoria))
         bd1.connection.commit()
 
@@ -357,13 +328,66 @@ def VerEquipes(nomeDaEquipe):
     bdEquipes = bd1.cursor.rowcount
 
     if bdEquipes > 0:
-        print('\nEquipe cadastrada, segue as informacões ↯\n')
         bd1.cursor.execute("select * from equipes where nomeequipe = %s", (nomeDaEquipe,))
+        print('\nEquipe cadastrada, segue as informacões ↯\n')
         infoEquipes = bd1.cursor.fetchall()[0]
-        print(f'Nome Da Equipe -> {infoEquipes[0]}\nCodigo da Equipe -> {infoEquipes[1]}\nTop Laner -> {infoEquipes[2]}\nJungler -> {infoEquipes[4]}\nMid Laner -> {infoEquipes[3]}\nAtirador -> {infoEquipes[5]}\nSuporte -> {infoEquipes[6]}\nReserva -> {infoEquipes[7]}\nTreinador -> {infoEquipes[8]}')
-        time.sleep(10)
+        print(f'Nome da equipe -> {infoEquipes[0]}\nCodigo da Equipe -> {infoEquipes[1]}\nTop Laner -> {infoEquipes[2]}\nJungler -> {infoEquipes[4]}\nMid Laner -> {infoEquipes[3]}\nAtirador -> {infoEquipes[5]}\nSuporte -> {infoEquipes[6]}\nReserva -> {infoEquipes[7]}\nTreinador -> {infoEquipes[8]}')
+    
+        up = True
+        while up == True: 
+            
+
+            update = int(input('Deseja alterar alguma informação?\n\n1 -> Nome da equipe\n2 -> Top\n3 -> Jungler\n4 -> Mid\n5 -> Atirador\n6 -> Suporte\n7 -> Adicionar reserva\n0 -> Voltar\n\nInsira -> '))
+            
+            if update == 1:
+                equipes.change_team(nomeDaEquipe)
+                cls()
+            elif update == 2:
+                equipes.change_top(infoEquipes[2])
+                cls()
+            elif update == 3:
+                equipes.change_jungle(infoEquipes[4])
+                cls()
+            elif update == 4:
+                equipes.change_mid(infoEquipes[3])
+                cls()
+            elif update == 5:
+                equipes.change_adc(infoEquipes[5])
+                cls()
+            elif update == 6:
+                equipes.change_sup(infoEquipes[6])
+                cls()
+            elif update == 7:
+                equipes.reserva(nomeDaEquipe)
+                cls()
+            elif update == 0:
+                up == False
+            else:
+                continue
+
+        
     else:
         print('Equipe inexistente.')
+
+def deleteAccount(usuario):
+
+    delete = True
+    while delete == True:
+        #bd1.cursor.execute(f"select * FROM usuarios WHERE usuario = '{usuario}'")
+        bd1.cursor.execute(f"DELETE FROM usuarios WHERE usuario = '{usuario}'")
+        cont = bd1.cursor.rowcount
+        bd1.connection.commit()
+        if cont == 1:
+            print('Conta excluida')
+            time.sleep(1.5)
+            cls()
+            delete = False
+            
+        else:
+            print('Úsuario inexistente')
+            delete = False
+            
+
 def check_login():
     usuario = input('Úsuario: ')
     senha = input('Senha: ')
@@ -379,11 +403,11 @@ def check_login():
             #usuário logado
             cls()
             menu()
-            print(color.RED+'1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Infomações da conta\n5 -> Ver Equipes\n6 -> Adicionar informações das partidas no campeonato\n7 -> Configurações da conta\n0 -> Sair')
+            print(color.RED+'1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Infomações da conta\n5 -> Ver sua equipe\n6 -> Adicionar informações das partidas no campeonato\n7 -> Configurações da conta\n0 -> Sair')
             opc1 = int(input('Insira -> '))
 
             if opc1 == 6:
-                functions.JogosCAMPEONATOS()
+                functions.InfoCAMPEONATOS()
                 cls()
                 continue
             elif opc1 == 4:
@@ -428,73 +452,30 @@ def check_login():
                 break
             elif opc1 == 7:
                 cls()
-                configs(opc1)
+                configs(opc1, usuario)
                 cls()
                 continue
             else:
                 print('Digite corretamente!')
                 time.sleep(2.5)
-                continue   
                 cls()
+                continue   
+                
                 
         else:
             cls()
             print("Usuário ou senha incorretos!\n") 
             time.sleep(3)     
             pop = 1
-    cls()   
+    cls()  
 
-def mudarSENHA(usuario, senha):
-
-    C = True
-
-    while C == True:
-
-        bd1.cursor.execute("select senha, usuario from usuarios where senha = %s and usuario = %s", (senha,usuario))
-        countpassw = bd1.cursor.rowcount
-
-        if countpassw > 0:
-            newSENHA = input('Insira sua nova senha -> ')
-            senhaCRYPTED = hashlib.md5(str(newSENHA).encode('utf-8')).hexdigest()
-            bd1.cursor.execute('update usuarios set senha = %s where usuario = %s', (senhaCRYPTED,usuario))
-            bd1.connection.commit()
-            print('Senha mudada com sucesso!')
-            time.sleep(1.5)
-            C = False
-            cls()
-        else:
-            print('Senha ou úsuario digitados incorretos!')
-            continue
-            cls()
-            
-def mudaremail(usuario, email):
-    C = True
-
-    while C == True:
-
-        bd1.cursor.execute("select senha, usuario from usuarios where email = %s and usuario = %s", (email,usuario))
-        countemail = bd1.cursor.rowcount
-
-        if countemail > 0:
-            newEmail = input('Insira seu novo email -> ')
-            bd1.cursor.execute('update usuarios set email = %s where usuario = %s', (newEmail,usuario))
-            bd1.connection.commit()
-            print('Email mudado com sucesso!')
-            time.sleep(1.5)
-            C = False
-            cls()
-        else:
-            print('Email ou úsuario digitados incorretos!')
-            continue
-            cls()
-
-def configs(opc1):
+def configs(opc1, usuario):
     
     cf = True
     while cf == True:
-        print('1 -> Mudar Nick\n2 -> Mudar senha\n3 -> Mudar nome de úsuario\n4 -> Mudar email\n5 -> Vincular telefone\n0 -> Voltar')    
+        print('1 -> Mudar Nick\n2 -> Mudar senha\n3 -> Mudar email\n4 -> Vincular telefone\n5 -> Excluir conta\n0 -> Voltar')    
         config = int(input('Insira [1-5]-> '))
-        if config == 5:
+        if config == 4:
             x = True         
             while x == True:
                 
@@ -538,30 +519,27 @@ def configs(opc1):
                     continue
         elif config == 1:
             cls()
-            mudarNICK(input('Insira seu nick atual -> '), input('Insira seu úsuario -> '))
+            conta.mudarNICK(input('Insira seu nick atual -> '), usuario)
         elif config == 0:
             cf = False
         elif config == 2:
             senha = input('Insira sua senha atual: ')
             senha2 = hashlib.md5(str(senha).encode('utf-8')).hexdigest()
-            mudarSENHA(input('Insira seu nome de úsuario -> '), senha2)
+            conta.mudarSENHA(usuario, senha2)
             cls()
-        elif config == 4:
-            mudaremail(input('Insira seu nome de úsuario -> '), input('Insira seu email atual -> '))
-
-
-"""trabson.py"""
-# -*- utf-8 -*-
-
-# import hashlib
-# import datetime
-
+        elif config == 3:
+            conta.mudaremail(usuario, input('Insira seu email atual -> '))
+        elif config == 5:
+            deleteAccount(usuario)
+            break
 def _encerra_programa():
 
     opcao = input('Deseja criar novamente, s ou n? ')
 
     if opcao == 'n':
+        cls()
         return 0
+        
     return 1
 
 
@@ -612,7 +590,6 @@ def _valida_data():
 
     return data_nascimento
 
-
 def cria():
     """cria"""
     
@@ -627,7 +604,7 @@ def cria():
         data = _valida_data()
         nick = input('Insira seu nick -> ')
         jogador = """
-            Jogador 01
+            Informações:
             Nome: {USUARIO},
             E-mail: {EMAIL},
             Senha: {SENHA}
@@ -645,52 +622,17 @@ def cria():
             if row[0] > 0:
                 cls()
                 print('ERROR: Usuário já existe')
+                continue
             if row[1] > 0:
                 cls()
-                print('ERROR: Nick já existe')      
+                print('ERROR: Nick já existe') 
+                continue     
         else: 
             bd1.cursor.execute("insert into usuarios(telefone,email,usuario,nick,datanasc,senha) values(%s,%s,%s,%s,%s,%s)",(telefone,email,usuario,nick,data,senha))
             bd1.connection.commit()
             cls()
             print('Úsuario cadastrado com sucesso')
-            time.sleep(5)
+            time.sleep(1.5)
         print(jogador)
 
         continua = _encerra_programa()
-
-
-#        nick = input('Insira seu nick: ')
-#
-#        str_date = '01/01/2005'
-#        date = datetime.strptime(str_date, '%d/%m/%Y')
-#        date2 = datetime.strptime(data, '%d/%m/%Y')
-#        if date2 > date:
-#            print('Apenas maiores de 14 anos.')
-#            time.sleep(5)
-#            continue
-#
-#        bd1.cursor.execute(
-#            "select usuario from usuarios where usuario = %s", (usuario,)
-#        )
-#        rowUsuario = bd1.cursor.rowcount
-#        bd1.cursor.execute(
-#            "select nick from usuarios where nick = %s", (nick,)
-#        )
-#        rowNick = bd1.cursor.rowcount
-#
-#        row= (rowUsuario, rowNick)
-#        if row[0] > 0 or row[1] > 0:
-#            if row[0] > 0:
-#                print('ERROR: Usuário já existe')
-#            if row[1] > 0:
-#                print('ERROR: Nick já existe')
-#        else:
-#            bd1.cursor.execute(
-#                "insert into usuarios(
-#                    telefone,email,usuario,nick,data,senha)
-#                values(%s,%s,%s,%s,%s,%s)"
-#            ,(telefone,email,usuario,nick,data,senha))
-#            bd1.connection.commit(
-#            print('Úsuario cadastrado com sucesso')
-#            time.sleep(5)
-#            continua = 0

@@ -361,7 +361,7 @@ def VerEquipes(nomeDaEquipe):
                 equipes.reserva(nomeDaEquipe)
                 cls()
             elif update == 0:
-                up == False
+                up = False
             else:
                 continue
 

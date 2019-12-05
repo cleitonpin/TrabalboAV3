@@ -70,4 +70,31 @@ def mudaremail(usuario, email):
             print('Email ou úsuario digitados incorretos!')
             cls()
             continue
-                
+ 
+
+def esquecisenha(usuario, email):
+    bd1.cursor.execute(f"SELECT usuario,senha,email FROM usuarios WHERE usuario = '{usuario}' AND email = '{email}'")
+    row = bd1.cursor.rowcount
+     
+    c = True
+    while c == True:
+
+        if row > 0:
+        
+            try:
+
+                newSENHA = input('Insira sua nova senha -> ')
+                senhaCRYPTED = hashlib.md5(str(newSENHA).encode('utf-8')).hexdigest()
+                bd1.cursor.execute('update usuarios set senha = %s where usuario = %s', (senhaCRYPTED,usuario))
+                bd1.connection.commit()
+                print('Senha mudada com sucesso!')
+                time.sleep(1.5)
+                c = False
+            except:
+                cls()
+                continue
+        else:
+            print("Úsuario ou email digitados não encontrados")
+            time.sleep(1)
+            cls()
+            c = False

@@ -1,5 +1,5 @@
 import os 
-from funcoes import functions
+from funcoes import functions, conta
 import time
 class color:
    PURPLE = '\033[95m'
@@ -28,6 +28,8 @@ while conti == 0:
     
 1 -> Entrar
 2 -> Criar Conta
+3 -> Esqueci senha
+0 -> Encerrar programa
 """)
 
     try:
@@ -37,6 +39,10 @@ while conti == 0:
         if opc == 2:
             functions.cria()
 
+        elif opc == 3:
+            conta.esquecisenha(input('Insira seu úsuario -> '),input('Insira seu email -> ') )
+        elif opc == 0:
+            conti = 1
         elif opc == 1:
             functions.check_login()
     except:

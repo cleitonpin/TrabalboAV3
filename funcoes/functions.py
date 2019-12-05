@@ -79,6 +79,8 @@ Resistência mágica: {annie.stats.magic_resist} (+{annie.stats.magic_resist_per
 
     input('aperte enter para contiuar')
 
+
+
 def InfoCAMPEONATOS():
     cls()
     cod_camps = int(input('Insira o código do campeonato -> '))
@@ -300,6 +302,7 @@ def registrarEquipes():
                     bd1.cursor.execute("insert into pessoajuridica(id_pessoa,cnpj) values(%s,%s)", (id_pessoa,cnpj))
                     bd1.connection.commit()
                     print('Equipe cadastrada com sucesso.')
+                    time.sleep(1.5)
                     a = 1 
             else:
                 cnpj = input('Insira seu CNPJ (XX.XXX.XXX/XXXX.XX) -> ')
@@ -318,6 +321,7 @@ def registrarEquipes():
                     bd1.cursor.execute("insert into pessoajuridica(id_pessoa,cnpj) values(%s,%s)", (id_pessoa,cnpj))
                     bd1.connection.commit()
                     print('Equipe cadastrada com sucesso.')
+                    time.sleep(1.5)
                     a = 1 
 
 def VerEquipes(nomeDaEquipe):
@@ -366,9 +370,12 @@ def VerEquipes(nomeDaEquipe):
         
     else:
         print('Equipe inexistente.')
+        time.sleep(1.5)
+        cls()
 
 def deleteAccount(usuario):
 
+    
     delete = True
     while delete == True:
         #bd1.cursor.execute(f"select * FROM usuarios WHERE usuario = '{usuario}'")
@@ -401,7 +408,7 @@ def check_login():
             #usuário logado
             cls()
             menu()
-            print(color.RED+'1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Infomações da conta\n5 -> Ver sua equipe\n6 -> Adicionar informações das partidas no campeonato\n7 -> Configurações da conta\n8 -> Ver Informações do campeão\n0 -> Sair')
+            print(color.RED+'\n1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Infomações da conta\n5 -> Ver sua equipe\n6 -> Adicionar informações das partidas no campeonato\n7 -> Configurações da conta\n8 -> Ver Informações do campeão\n0 -> Sair')
             opc1 = int(input('\nInsira -> '))
 
             if opc1 == 6:
@@ -415,16 +422,16 @@ def check_login():
                 bd1.cursor.execute("select * from usuarios where usuario = %s",(usuario,))  
                 infoCONTA = bd1.cursor.fetchall()[0]
 
-                if infoCONTA[0] == 0: 
+                if infoCONTA[0] == '0': 
                     bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
                     infoUSUARIO = bd1.cursor.fetchall()[0]
                     print(f'Telefone -> Sem registro\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> {infoUSUARIO[5]}\nData nascimento -> {infoUSUARIO[6]}')
-                    time.sleep(20)
+                    time.sleep(10)
                 else:
                     bd1.cursor.execute(f"select * from usuarios where usuario = '{usuario}'")
                     infoUSUARIO = bd1.cursor.fetchall()[0]
                     print(f'Telefone -> {infoUSUARIO[0]}\nEmail -> {infoUSUARIO[2]}\nNick -> {infoUSUARIO[3]}\nUsuario -> {infoUSUARIO[4]}\nSenha -> {infoUSUARIO[5]}\nData nascimento -> {infoUSUARIO[6]}')
-                    time.sleep(20)
+                    time.sleep(10)
                 cls()
                 continue
             elif opc1 == 5:
@@ -530,8 +537,12 @@ def configs(opc1, usuario):
         elif config == 3:
             conta.mudaremail(usuario, input('Insira seu email atual -> '))
         elif config == 5:
-            deleteAccount(usuario)
-            break
+            confirmacao = input('Tem certeza, s/n?  ')
+            if confirmacao == 's':
+                deleteAccount(usuario)
+                break
+            cls()
+            continue
 
 def _encerra_programa():
 
@@ -586,7 +597,7 @@ def _valida_email():
             sender_email = "riftpopo@gmail.com"
             receiver_email = email_input
             password = "cleiton142"
-
+            
             message = MIMEMultipart("alternative")
             message["Subject"] = "Código de verificação"
             message["From"] = sender_email
@@ -603,7 +614,7 @@ def _valida_email():
                 <div style=''>
                     <h2 align='center' style='font-family:Arial; color:#e6e6e6; background:#a22222; padding:10px 0 10px 0;'>RiftsPoPo</h2>
                     <div> 
-                    <h5 style='color:#565656; font-size:24px;'>CÓDIGO DE CORFIRMAÇÃO: {codigo}</h5>
+                    <h5 style='color:#565656; font-size:24px;'>CÓDIGO DE CONFIRMAÇÃO: {codigo}</h5>
                     </div>
                     <div>
                     <img style='position:relative; left:340px; align="center' src='https://i.imgur.com/tAXyXK1.jpg' alt='sandney mito ahuahuah'>

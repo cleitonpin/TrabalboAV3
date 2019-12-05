@@ -1,6 +1,6 @@
 import os 
 from funcoes import functions
-
+import time
 class color:
    PURPLE = '\033[95m'
    CYAN = '\033[96m'
@@ -29,10 +29,18 @@ while conti == 0:
 1 -> Entrar
 2 -> Criar Conta
 """)
-    opc = int(input('Insira -> '))
 
-    if opc == 2:
-        functions.cria()
+    try:
+        
+        opc = int(input('Insira -> '))
 
-    elif opc == 1:
-        functions.check_login()
+        if opc == 2:
+            functions.cria()
+
+        elif opc == 1:
+            functions.check_login()
+    except:
+        print('Digite corretamente.')
+        time.sleep(1)
+        cls()
+        continue

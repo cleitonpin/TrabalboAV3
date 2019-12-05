@@ -1,6 +1,7 @@
 import random
 import time
 import os 
+import asyncio
 from datetime import datetime
 import hashlib
 import sys
@@ -9,9 +10,12 @@ from cassiopeia import Champion, Champions
 import cassiopeia as cass
 from validador import email, usuario, data
 from utils.senha import gerador
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
     
-cass.set_riot_api_key("RGAPI-ac923fc3-6bfd-430b-b693-639e0d1dbc53")  # This overrides the value set in your configuration/settings.
+cass.set_riot_api_key("RGAPI-88430039-1aec-4fba-b04c-9634d1bf52d73")  # This overrides the value set in your configuration/settings.
 cass.set_default_region("BR")
 
 
@@ -41,7 +45,7 @@ def cls():
 
 def VerCamp(cod_camps):
     cls()
-    
+    #veiricar se o campeonato existe
     bd1.cursor.execute("select cod_campeonato from campeonatos where cod_campeonato = %s", (cod_camps,))
     bdcod_camps = bd1.cursor.rowcount
 
@@ -55,15 +59,9 @@ def VerCamp(cod_camps):
         print('Campeonato inexistente.')
 
 def get_champions():
-   # champions = Champions(region='BR')
-
-   # for champion in champions:
-   #       print(champion.name, champion.id)
-
     cls()
 
     camp = input('Insira o nome do campeão -> ')
-    # annie = Champion(name="Annie", region="NA")
     annie = Champion(name=camp, region="BR")
 
     
@@ -202,7 +200,7 @@ def registrarEquipes():
 
         nomeORGANIZADOR = input('Insira seu nome pessoal -> ')
         Endereço = input('Insira seu endereço -> ') 
-        contato = _valida_email()
+        contato = input('Insira seu email para contato -> ')
         pessoa = int(input('Cadastrar a equipe como: Pessoa Física [1] ou Juridíca [2] -> '))
 
         verificaremail = (contato.find('@'),contato.find('.com'))
@@ -403,8 +401,8 @@ def check_login():
             #usuário logado
             cls()
             menu()
-            print(color.RED+'1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Infomações da conta\n5 -> Ver sua equipe\n6 -> Adicionar informações das partidas no campeonato\n7 -> Configurações da conta\n0 -> Sair')
-            opc1 = int(input('Insira -> '))
+            print(color.RED+'1 -> Registrar campeonato\n2 -> Ver campeonatos [ativos]\n3 -> Registrar Equipe\n4 -> Infomações da conta\n5 -> Ver sua equipe\n6 -> Adicionar informações das partidas no campeonato\n7 -> Configurações da conta\n8 -> Ver Informações do campeão\n0 -> Sair')
+            opc1 = int(input('\nInsira -> '))
 
             if opc1 == 6:
                 functions.InfoCAMPEONATOS()
@@ -430,7 +428,7 @@ def check_login():
                 cls()
                 continue
             elif opc1 == 5:
-                functions.VerEquipes(nomeDaEquipe = input('Insira o nome da equipe -> '))
+                functions.VerEquipes(nomeDaEquipe = input('\nInsira o nome da equipe -> '))
                 cls()
                 continue
             elif opc1 == 1:
@@ -455,6 +453,8 @@ def check_login():
                 configs(opc1, usuario)
                 cls()
                 continue
+            elif opc1 == 8:
+                get_champions()
             else:
                 print('Digite corretamente!')
                 time.sleep(2.5)
@@ -532,6 +532,7 @@ def configs(opc1, usuario):
         elif config == 5:
             deleteAccount(usuario)
             break
+
 def _encerra_programa():
 
     opcao = input('Deseja criar novamente, s ou n? ')
@@ -564,15 +565,92 @@ def _gera_senha():
 
 def _valida_email():
 
+
+    
     email_input = ''
+    c = True
+    while c == True:
 
-    while True:
+        try:
+            # cd = True
+            # while cd == True:
+            email_input = input('Insira um e-mail válido [GMAIL] -> ')
+            verificaEmail = (email_input.find('@'),email_input.find('gmail.com'))
+            if verificaEmail[0] == -1:
+                print("\nErro: email inválido [missing: '@']\n")
+                continue
+            if verificaEmail[1] == -1:
+                print("\nErro: email inválido [missing: 'gmail.com']\n")
+                continue
 
-        email_input = input('Insira um e-mail válido -> ')
+            sender_email = "riftpopo@gmail.com"
+            receiver_email = email_input
+            password = "cleiton142"
 
-        if email.valida(email_input):
-            break
-        print('email inválido')
+            message = MIMEMultipart("alternative")
+            message["Subject"] = "Código de verificação"
+            message["From"] = sender_email
+            message["To"] = receiver_email
+            codigo = random.randint(1000,9999)
+            # Create the plain-text and HTML version of your message
+            text = "Oi"
+            html = f"""\
+            <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            </head>
+            <body>
+                <div style=''>
+                    <h2 align='center' style='font-family:Arial; color:#e6e6e6; background:#a22222; padding:10px 0 10px 0;'>RiftsPoPo</h2>
+                    <div> 
+                    <h5 style='color:#565656; font-size:24px;'>CÓDIGO DE CORFIRMAÇÃO: {codigo}</h5>
+                    </div>
+                    <div>
+                    <img style='position:relative; left:340px; align="center' src='https://i.imgur.com/tAXyXK1.jpg' alt='sandney mito ahuahuah'>
+                    </div>
+                </div>
+                
+            </body>
+
+            </html>
+            """
+
+            # Turn these into plain/html MIMEText objects
+            part1 = MIMEText(text, "plain")
+            part2 = MIMEText(html, "html")
+
+            # Add HTML/plain-text parts to MIMEMultipart message
+            # The email client will try to render the last part first
+            message.attach(part1)
+            message.attach(part2)
+
+            # Create secure connection with server and send email
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+                server.login(sender_email, password)
+                server.sendmail(
+                    sender_email, receiver_email, message.as_string()
+                )
+
+            
+            # ca = True
+            # while ca == True:
+            cod = int(input(color.DARKCYAN+'\nCaso tenha colocado um email inexistente, digite 0'+color.RED+'\n\nDigite o código enviado ao seu email -> '))
+
+            if cod != codigo:
+                if cod == 0:
+                    continue
+                continue
+                
+                # else:
+                #     ca = False
+                
+
+            c = False
+        except:
+            cls()
+            continue
+
     return email_input
 
 
@@ -595,17 +673,24 @@ def cria():
     
     continua = 1
     while continua == 1:
-
+        cls()
         telefone = 0
+        print(color.RED+"""
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                                         #
+#                       CRIAR CONTA                       #
+#                                                         #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+""")
         usuario = _valida_usuario()
-        senha = _gera_senha()
+        senha = f"{_gera_senha()}\n"
         email = _valida_email()
         data = _valida_data()
         nick = input('Insira seu nick -> ')
         jogador = """
             Informações:
-            Nome: {USUARIO},
+            Úsuario: {USUARIO},
             E-mail: {EMAIL},
             Senha: {SENHA}
             Data: {DATA}

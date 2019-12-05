@@ -46,7 +46,7 @@ def mudarSENHA(usuario, senha):
             C = False
             cls()
         else:
-            print('Senha ou úsuario digitados incorretos!')
+            print('Senha ou úsuariodigitados incorretos!')
             cls()
             continue
             
@@ -70,4 +70,4 @@ def mudaremail(usuario, email):
             print('Email ou úsuario digitados incorretos!')
             cls()
             continue
-            
+                

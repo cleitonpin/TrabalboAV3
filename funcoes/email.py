@@ -2,10 +2,11 @@
 import re
 
 
-def valida(email):
+def valida(gmail):
     """valida
 
-    :param gmail:
+    :param email:
     """
-    return re.compile(r'^[\w-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$').match(
-        email)
+    
+    return gmail.find('@') == 1 and gmail.find('gmail.com') == 1
+    #return re.compile(r'^[\w-] + @(?:[a-zA-Z0-9-] + \.) + [a-zA-Z]{2,}$')
